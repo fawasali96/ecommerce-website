@@ -1,8 +1,5 @@
 
-
-
-
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -221,9 +218,9 @@
         }
 
         function resendOtp() {
-            // if (timer > 0) return;
+            if (timer > 0) return;
 
-            // startTimer();
+            startTimer();
             clearInterval(timerInterval);
             timer = 60;
             startTimer();

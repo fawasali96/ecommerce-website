@@ -1,0 +1,284 @@
+<%- include("../../views/partials/user/header") %>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+  .container {
+    margin-bottom: 100px;
+  }
+
+  .form-box {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 750px;
+    margin: 0 auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-control {
+    width: 100%;
+  }
+
+  .password-wrapper {
+    position: relative;
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .profile-image-preview {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+  }
+
+  .btn-orange {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+  }
+
+  .btn-orange:hover {
+    background-color: #e65c00;
+  }
+
+  .action-buttons button,
+  .action-buttons a {
+    margin-right: 10px;
+  }
+
+  .forgot-pass:hover {
+    color: #0a58ca;
+  }
+</style>
+
+<div class="container">
+  <div class="form-box">
+    <h3 class="mb-4">Edit Profile</h3>
+
+    <form id="editProfileForm" action="/edit-profile" method="POST"  enctype="multipart/form-data">
+      <div class="form-group text-center">
+        <label for="profileImage">Profile Image</label><br>
+        <img src="/uploads/re-image/<%= user.profileImage %>"
+             alt="Profile" class="profile-image-preview mb-2">
+        <input type="file" name="profileImage" class="form-control mt-2" style="max-width: 250px; margin: 0 auto;">
+      </div>
+
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label>Full Name <span class="text-danger">*</span></label>
+          <input id="name" name="name" type="text" value="<%= user.name %>" class="form-control" required>
+          
+        </div>
+       
+        <div class="form-group col-md-6">
+          <label>Phone Number <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <select class="form-control"  disabled>
+              <option value="+91">+91</option>
+            </select>
+            <input type="text" name="phone" class="form-control" id="phone" value="<%= user.phone %>" 
+                   pattern="[0-9]{10}" required>
+                   
+          </div>
+        </div>
+
+      </div>
+
+      
+
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label>Email address</label>
+          <input type="email" value="<%= user.email %>" class="form-control" disabled>
+          <small class="text-muted">Email cannot be changed here</small>
+        </div>
+        
+      </div>
+
+      <div class="form-group action-buttons">
+        <a class="btn btn-orange" href="/change-email">Change Your Email</a><br><br>
+        <button type="submit" class="btn btn-success">Save Changes</button>
+      </div>
+    </form>
+
+    <hr class="mt-4 mb-4">
+
+<h4 class="mb-3">Change Password</h4>
+<form id="changePasswordForm" action="/change-password" method="POST">
+  <div class="form-group" style="max-width: 400px;">
+    <label for="currentPassword">Current Password</label>
+    <div class="password-wrapper">
+      <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+      <i onclick="togglePassword('currentPassword', this)" class="bi bi-eye-fill toggle-password"></i>
+    </div>
+    <small id="currentPasswordError" class="text-danger"></small>
+  </div>
+
+  <div class="form-group mt-3" style="max-width: 400px;">
+    <label for="newPassword">New Password</label>
+    <div class="password-wrapper">
+      <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+      <i onclick="togglePassword('newPassword', this)" class="bi bi-eye-fill toggle-password"></i>
+    </div>
+    <small id="newPasswordError" class="text-danger"></small>
+  </div>
+
+  <div class="form-group mt-3" style="max-width: 400px;">
+    <label for="confirmPassword">Confirm New Password</label>
+    <div class="password-wrapper">
+      <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+      <i onclick="togglePassword('confirmPassword', this)" class="bi bi-eye-fill toggle-password"></i>
+    </div>
+    <small id="confirmPasswordError" class="text-danger"></small>
+  </div>
+
+  <div class="action-buttons mt-3">
+    <button type="submit" class="btn btn-primary">Change Password</button>
+    <a href="/change-password-forgot" class="forgot-pass" style="margin-left: 10px;">Forgot Password..?</a>
+  </div>
+</form>
+
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+        
+
+        document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+    
+        try {
+            const response = await fetch('/edit-profile', {
+                method: 'POST',
+                body: formData,
+            });
+    
+            const result = await response.json();
+    
+            if (result.success) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Profile updated successfully',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                window.location.href = '/userProfile';
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: result.message,
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'An unexpected error occurred. Please try again.',
+            });
+        }
+    });
+
+
+  function togglePassword(inputId, icon) {
+    const input = document.getElementById(inputId);
+    input.type = input.type === "password" ? "text" : "password";
+    icon.classList.toggle("bi-eye");
+    icon.classList.toggle("bi-eye-slash");
+  }
+
+  
+  document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Reset error messages
+        document.getElementById('currentPasswordError').textContent = '';
+        document.getElementById('newPasswordError').textContent = '';
+        document.getElementById('confirmPasswordError').textContent = '';
+
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        // Client-side validation
+        let isValid = true;
+
+        if (newPassword.length < 8 || !/[a-zA-Z]/.test(newPassword) || !/\d/.test(newPassword)) {
+            document.getElementById('newPasswordError').textContent = 'Password must be at least 8 characters long and contain both letters and numbers.';
+            isValid = false;
+        }
+
+        if (newPassword !== confirmPassword) {
+            document.getElementById('confirmPasswordError').textContent = 'Passwords do not match.';
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        try {
+            const response = await fetch('/change-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Password changed successfully',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                window.location.href = '/userProfile';
+            } else {
+                if (result.error === 'current_password_incorrect') {
+                    document.getElementById('currentPasswordError').textContent = 'Current password is incorrect.';
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: result.message,
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'An unexpected error occurred. Please try again.',
+            });
+        }
+    });
+</script>
+
+<%- include("../../views/partials/user/footer") %>

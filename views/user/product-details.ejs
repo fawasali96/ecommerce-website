@@ -1,0 +1,349 @@
+<%- include("../../views/partials/user/header") %>
+
+<style>
+/* General Page Styling */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fff;
+  color: #333;
+}
+
+.breadcrumb {
+  margin: 20px 0;
+  font-size: 14px;
+}
+
+.breadcrumb a {
+  color: #6c757d;
+  text-decoration: none;
+}
+
+.breadcrumb span {
+  margin: 0 5px;
+  color: #6c757d;
+}
+
+/* Main Layout */
+.product-details-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 0 15px;
+}
+
+.product-details-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.col-left, .col-right {
+  flex: 1;
+}
+
+/* Image Section */
+.detail-gallery {
+  text-align: center;
+}
+
+.detail-gallery figure {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.detail-gallery img {
+  width: 100%;
+  max-width: 400px;
+  transition: transform 0.3s ease;
+  cursor: zoom-in;
+}
+
+.detail-gallery img.zoomed {
+  transform: scale(2);
+  cursor: zoom-out;
+}
+
+.slider-nav-thumbnails {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px;
+}
+
+.slider-nav-thumbnails img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.slider-nav-thumbnails img.active-thumb {
+  border-color: #007bff;
+}
+
+/* Product Info */
+.detail-info {
+  padding: 10px 20px;
+}
+
+.detail-info h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.product-detail-rating {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.product-price-cover {
+  margin-bottom: 15px;
+}
+
+.product-price span {
+  font-size: 22px;
+  color: #28a745;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.short-desc {
+  margin-bottom: 15px;
+}
+
+.product_sort_info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.product_sort_info li {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+ 
+.detail-extralink {
+  display: flex;
+  margin-top: 20px;
+}
+
+.detail-qty {
+  display: flex;
+  align-items: center;
+  width: fit-content; 
+  background-color: #f0f0f0; 
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 1px 10px;
+}
+
+.detail-qty a {
+  cursor: pointer;
+  color: #333;
+  font-size: 16px;
+}
+
+.detail-qty .qty-val {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-right: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.qty-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  
+}
+
+.qty-icon a {
+  color: #333;
+  text-decoration: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+
+.product-extra-link2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 20px;
+}
+
+.button-add-to-cart {
+  background-color: #198754;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.button-add-to-cart:hover {
+  background-color: #146c43; 
+}
+
+.button-add-to-cart:active {
+  transform: scale(0.98);
+}
+
+
+.product-meta {
+  margin-top: 30px;
+  font-size: 14px;
+}
+</style>
+
+<main class="main">
+  <div class="page-header breadcrumb-wrap">
+    <div class="product-details-container">
+      <div class="breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span> <%=category.name%>
+        <span>/</span> <%=product.productName%>
+      </div>
+    </div>
+  </div>
+
+  <section class="mb-50">
+    <div class="product-details-container">
+      <div class="product-details-row">
+        <!-- Left Column: Images -->
+        <div class="col-left">
+          <div class="detail-gallery">
+            <figure>
+              <img id="main-image" src="/uploads/re-image/<%= product.productImage[0] %>" alt="Product">
+            </figure>
+            <div class="slider-nav-thumbnails">
+              <% for(let i = 0; i < product.productImage.length; i++) { %>
+                <img class="thumbnail-img <% if(i === 0) { %>active-thumb<% } %>"
+                     src="/uploads/re-image/<%= product.productImage[i] %>"
+                     data-src="/uploads/re-image/<%= product.productImage[i] %>">
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Product Info -->
+        <div class="col-right">
+          <div class="detail-info">
+            <h2><%= product.productName %></h2>
+            <div class="product-detail-rating">
+              <span>Brand: <a class="text-success" href="#"><%= product.brand %></a></span>
+              <span>⭐⭐⭐⭐☆ (25 reviews)</span>
+            </div>
+
+            <div class="product-price-cover">
+              <span class="text-brand">₹<%= product.salePrice %></span>
+              <span class="old-price">₹<%= product.regularPrice %></span>
+              <span class="save-price">
+                <% if (!totalOffer) { %>No Offers<% } else { %><%= totalOffer %>% Offer<% } %>
+              </span>
+            </div>
+
+            <div class="short-desc">
+              <p><%= product.description %></p>
+            </div>
+
+            <div class="product_sort_info">
+              <ul>
+                <li><i class="fa-solid fa-crown"></i> 1 Year Brand Warranty</li>
+                <li><i class="fa-solid fa-arrows-rotate"></i> 30 Day Return Policy</li>
+                <li><i class="fa-solid fa-credit-card"></i> Cash on Delivery available</li>
+              </ul>
+            </div>
+
+            <div class="detail-extralink">
+              <div class="detail-qty" data-max="<%= quantity %>"> 
+                <span class="qty-val" id="quantity">1</span>
+                <div class="qty-icon">
+                  <a class="qty-up"><i class="fas fa-angle-up"></i></a>
+                  <a class="qty-down"><i class="fas fa-angle-down"></i></a>
+                </div>
+                
+              </div>
+              <div class="product-extra-link2">
+                <button class="button-add-to-cart">Add to cart</button>
+                <a href="/wishlist"><i class="fa-regular fa-heart text-success"></i>
+</a>
+              </div>
+            </div>
+
+            <ul style="list-style: none" class="product-meta">
+              <li>Stock Code: <span class="text-success">FWM15VKT</span></li>
+              <li>Tags: <span class="text-success"><%= category.name %></span></li>
+              <li>Availability: 
+                  <% if (quantity > 0) { %>
+                   <span class="text-success"><%= quantity %> Items in Stock</span>
+                  <% } else { %>
+                    <span class="text-danger">Out of Stock</span>
+                  <% } %>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const mainImage = document.getElementById("main-image");
+  const thumbnails = document.querySelectorAll(".thumbnail-img");
+
+  thumbnails.forEach(thumb => {
+    thumb.addEventListener("click", () => {
+      mainImage.src = thumb.dataset.src;
+      thumbnails.forEach(t => t.classList.remove("active-thumb"));
+      thumb.classList.add("active-thumb");
+    });
+  });
+
+  mainImage.addEventListener("click", () => {
+    mainImage.classList.toggle("zoomed");
+  });
+});
+
+
+const qtyContainer = document.querySelector('.detail-qty');
+const maxQuantity = parseInt(qtyContainer.dataset.max);
+
+const qtyUp = document.querySelector('.qty-up');
+const qtyDown = document.querySelector('.qty-down');
+const qtyVal = document.getElementById('quantity');
+
+qtyUp.addEventListener('click', () => {
+  let currentQty = parseInt(qtyVal.textContent);
+  if (currentQty < maxQuantity) {
+    qtyVal.textContent = currentQty + 1;
+  }
+  // No action if limit is reached
+});
+
+qtyDown.addEventListener('click', () => {
+  let currentQty = parseInt(qtyVal.textContent);
+  if (currentQty > 1) {
+    qtyVal.textContent = currentQty - 1;
+  }
+});
+
+
+</script>
+
+<%- include("../../views/partials/user/footer") %>

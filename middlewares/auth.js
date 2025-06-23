@@ -47,7 +47,7 @@ const adminAuth = (req, res, next) => {
             if (admin && admin.isAdmin) { 
                 next();
             } else {
-                req.session.destroy();  // Clear invalid session
+                req.session.destroy();  
                 res.redirect('/admin/login');
             }
         })

@@ -8,7 +8,7 @@ const productController = require('../controllers/admin/productController');
 const {userAuth, adminAuth} = require("../middlewares/auth")
 const multer = require("multer");
 const storage = require("../helpers/multer");
-const uploads = multer({storage: storage})
+const uploads = multer({storage: storage});
 
 router.get('/pageerror', adminController.pageError);
 router.get('/login', adminController.loadLogin);

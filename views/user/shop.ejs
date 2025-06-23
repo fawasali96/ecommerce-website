@@ -1,0 +1,329 @@
+<%- include("../../views/partials/user/header") %>
+<style>
+ .main-container {
+   max-width: 1200px;
+   margin: 0 auto;
+   padding: 20px;
+ }
+ .shop-topbar {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 20px;
+ }
+
+
+ .search-form {
+   display: flex;
+   align-items: center;
+   background-color: #f1f1f1;
+   border-radius: 25px;
+   overflow: hidden;
+   max-width: 250px;
+   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+ }
+
+
+ .search-input {
+   flex: 1;
+   padding: 8px 10px;
+   font-size: 14px;
+   border: none;
+   outline: none;
+   background-color: transparent;
+ }
+
+
+ .search-button {
+   padding: 8px 15px;
+   background-color: #1e918b;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+   font-size: 14px;
+   border-radius: 15px;
+   margin-right: 5px;
+   transition: background-color 0.3s, transform 0.2s;
+ }
+
+
+ .search-button:hover {
+   background-color: #0056b3;
+   transform: scale(1.05);
+ }
+ .sidebar {
+   padding: 20px;
+   border: 1px solid #ddd;
+   background-color: #f9f9f9;
+   border-radius: 8px;
+   margin-bottom: 20px;
+   width: 250px;
+   text-align: center;
+ }
+
+
+ .filter-section {
+   margin-bottom: 20px;
+ }
+
+
+ .filter-title {
+   font-weight: bold;
+   margin-bottom: 10px;
+   font-size: 16px;
+   color: #333;
+ }
+
+
+ .filter-item {
+   margin: 5px 0;
+ }
+
+
+ .filter-item a {
+   text-decoration: none;
+   color: #333;
+ }
+
+
+ .filter-item a:hover {
+   color: #007bff;
+ }
+
+
+ .product-list-container {
+   display: flex;
+   gap: 20px;
+ }
+
+
+ .product-grid {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 20px;
+   width: calc(100% - 270px);
+ }
+
+
+ .product-card {
+   width: calc(33.333% - 20px);
+   border: 1px solid #ddd;
+   padding: 15px;
+   border-radius: 8px;
+   text-align: center;
+   position: relative;
+ }
+
+
+ .product-card img {
+   max-width: 100%;
+   height: auto;
+   border-radius: 5px;
+ }
+
+
+ .wishlist-btn {
+   position: absolute;
+   top: 8px;
+   right: 8px;
+   background-color: rgba(237, 247, 247, 0.8);
+   color: #fff;
+   padding: 8px;
+   border-radius: 50%;
+   cursor: pointer;
+ }
+
+
+ .add-to-cart-btn {
+   background-color: #46698f;
+   color: #fff;
+   padding: 10px;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+   width: 100%;
+   margin-top: 10px;
+ }
+
+
+ .pagination {
+   display: flex;
+   justify-content: center;
+   gap: 10px;
+   margin: 20px 0;
+ }
+
+
+ .pagination a {
+   padding: 8px 12px;
+   background-color: #f0f0f0;
+   border: 1px solid #ddd;
+   color: #333;
+   text-decoration: none;
+ }
+
+
+ .pagination .active {
+   background-color: #007bff;
+   color: #fff;
+ }
+
+
+ .price-filter {
+   padding: 10px;
+   background-color: #f9f9f9;
+   border-radius: 8px;
+   margin-top: 20px;
+ }
+
+
+ .price-filter .price-options {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+ }
+
+
+ .price-button {
+   padding: 12px 20px;
+   background-color: #f1f1f1;
+   color: #333;
+   border: 1px solid #ddd;
+   border-radius: 30px;
+   cursor: pointer;
+   transition: background-color 0.3s, transform 0.2s;
+   text-align: center;
+   font-size: 14px;
+ }
+
+
+ .price-button:hover {
+   background-color: #007bff;
+   color: white;
+   transform: scale(1.05);
+ }
+
+
+ .price-button:active {
+   transform: scale(0.95);
+ }
+
+
+ .category-brand-container {
+   text-align: center;
+ }
+</style>
+
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+
+<div class="main-container">
+  <section class="shop-page container">
+    <div class="shop-topbar">
+      <div class="search-bar">
+        <form action="/shop" method="GET" class="search-form">
+          <input type="text" name="search" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Search items..." class="search-input" />
+          <button type="submit" class="search-button">Search</button>
+        </form>
+      </div>
+      <div class="sort-bar">
+        <form action="/shop" method="GET">
+          <select name="sort" onchange="this.form.submit()">
+            <option value="">Sort By</option>
+            <option value="priceLow" <%= sort === 'priceLow' ? 'selected' : '' %>>Price: Low to High</option>
+            <option value="priceHigh" <%= sort === 'priceHigh' ? 'selected' : '' %>>Price: High to Low</option>
+            <option value="az" <%= sort === 'az' ? 'selected' : '' %>>Name: A-Z</option>
+            <option value="za" <%= sort === 'za' ? 'selected' : '' %>>Name: Z-A</option>
+            <option value="rating" <%= sort === 'rating' ? 'selected' : '' %>>Average Ratings</option>
+            <option value="new" <%= sort === 'new' ? 'selected' : '' %>>New Arrivals</option>
+            <option value="featured" <%= sort === 'featured' ? 'selected' : '' %>>Featured</option>
+          </select>
+          <% if (selectedCategory) { %><input type="hidden" name="category" value="<%= selectedCategory %>"><% } %>
+          <% if (selectedBrand) { %><input type="hidden" name="brand" value="<%= selectedBrand %>"><% } %>
+          <% if (search) { %><input type="hidden" name="search" value="<%= search %>"><% } %>
+        </form>
+      </div>
+    </div>
+
+    <div class="product-list-container">
+      <aside class="sidebar">
+        <div class="filter-section">
+          <div class="filter-title">Categories</div>
+          <div class="category-brand-container">
+            <ul style="list-style-type: none;">
+              <% category.forEach(cat => { %>
+                <li class="filter-item">
+                  <a href="/shop?category=<%= cat._id %>"><%= cat.name %></a>
+
+                </li>
+              <% }) %>
+            </ul>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-title">Brands</div>
+          <div class="category-brand-container">
+            <ul style="list-style-type: none;">
+              <% brand.forEach(b => { %>
+                <li class="filter-item">
+                  <a href="/shop?brand=<%= b._id %><%= selectedCategory ? '&category=' + selectedCategory : '' %>"><%= b.brandName %></a>
+                </li>
+              <% }) %>
+            </ul>
+          </div>
+        </div>
+
+        <div class="price-filter">
+          <div class="filter-title">Filter by Price</div>
+          <div class="price-options">
+            <% const priceRanges = [
+              { label: "Under ₹500", min: 0, max: 500 },
+              { label: "₹500 - ₹1000", min: 500, max: 1000 },
+              { label: "₹1000 - ₹1500", min: 1000, max: 1500 },
+              { label: "Above ₹1500", min: 1500, max: 100000 }
+            ]; %>
+            <% priceRanges.forEach(range => { %>
+              <a href="/shop?min=<%= range.min %>&max=<%= range.max %><%= selectedCategory ? '&category=' + selectedCategory : '' %><%= selectedBrand ? '&brand=' + selectedBrand : '' %><%= search ? '&search=' + search : '' %>">
+                <button type="button" class="price-button"><%= range.label %></button>
+              </a>
+            <% }); %>
+          </div>
+        </div>
+      </aside>
+
+      <main class="product-grid">
+        <% products.forEach(product => { %>
+          <div class="product-card">
+            <span class="wishlist-btn">❤️</i></span>
+            <a href="/productDetails?id=<%= product._id %>">
+              <img src="/uploads/re-image/<%= product.productImage[0] %>" alt="<%= product.productName %>">
+              <h4><%= product.productName %></h4>
+              <p><%= product.brand %></p>
+              <p>Price: ₹<%= product.salePrice.toLocaleString('en-IN') %> <span class="text-muted"><strike>₹<%= product.regularPrice.toLocaleString('en-IN') %></strike></span></p>
+            </a>
+            <button class="add-to-cart-btn">Add to Cart</button>
+          </div>
+        <% }) %>
+      </main>
+    </div>
+
+  </section>
+</div>
+
+<div class="pagination">
+      <% if (currentPage > 1) { %>
+        <a class="btn" href="/shop?page=<%= currentPage - 1 %><%= sort ? '&sort=' + sort : '' %><%= search ? '&search=' + search : '' %>">Prev</a>
+      <% } %>
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <a class="btn <%= currentPage === i ? 'active' : '' %>" href="/shop?page=<%= i %><%= sort ? '&sort=' + sort : '' %><%= search ? '&search=' + search : '' %>"><%= i %></a>
+      <% } %>
+      <% if (currentPage < totalPages) { %>
+        <a class="btn" href="/shop?page=<%= currentPage + 1 %><%= sort ? '&sort=' + sort : '' %><%= search ? '&search=' + search : '' %>">Next</a>
+      <% } %>
+    </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<%- include("../../views/partials/user/footer") %>

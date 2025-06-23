@@ -5,11 +5,12 @@ const passport = require('passport');
 const userController = require('../controllers/user/userController');
 const productController = require("../controllers/user/productController");
 const profileController = require('../controllers/user/profileController');
-const multer = require("multer")
-const upload = require('../config/multer');
+const multer = require("multer");
+const storage = require("../helpers/multer");
+const uploads = multer({storage: storage});
 
 const { userAuth,addCartWishlist,checkUserAuthWish,ajaxAuth } = require('../middlewares/auth');
-const {resetPasswordMiddleware,blockLoggedInUsers, checkBlockedUser,checkLoggedIn,forgotPassLogout} = require("../middlewares/profileAuth")
+const {blockLoggedInUsers, checkBlockedUser,checkLoggedIn} = require("../middlewares/profileAuth")
 
 
 router.get('/pagenotfound', userController.pageNotFound);
@@ -41,13 +42,15 @@ router.get('/login',checkLoggedIn, userController.loadLoginPage);
 router.post('/login',checkLoggedIn, userController.login);
 
 router.get('/',checkBlockedUser, userController.loadHomePage);
+// router.get('/shop', userAuth, userController.loadShoppingPage);
+// router.get("/filter", userAuth, userController.filterProduct);
+// router.get("/filterPrice", userAuth, userController.filterByPrice);
+// router.post('/search', userAuth, userController.searchProducts);
+router.get('/shop', userAuth, userController.getFilteredProducts);
 
-router.get("/shop",userController.loadShoppingPage);
-router.get("/filter",userController.filterProduct);
 
+router.get("/productDetails", userAuth, productController.productDetails);
 
-router.get("/productDetails",productController.productDetails);
-router.get('/search', userController.searchProducts);
 
 
 router.get('/logout', userController.logout);
@@ -57,7 +60,19 @@ router.post('/verify-passForgot-otp', profileController.verifyForgotPassOtp);
 router.get('/reset-password', profileController.getResetPassPage);
 router.post('/resend-forgot-otp', profileController.resendOtp);
 router.post('/reset-password', profileController.postNewPassword);
-
+router.get('/userProfile', userAuth, profileController.userProfile);
+router.get('/edit-profile', userAuth, profileController.getEditProfile);
+router.post('/edit-profile', userAuth, uploads.single('profileImage'), profileController.editProfile);
+router.get('/change-email', userAuth, profileController.changeEmail);
+router.post('/change-email', userAuth, profileController.changeEmailValid);
+router.post('/verify-email-otp', userAuth, profileController.verifyEmailOtp);
+router.post('/resend-changeemail-otp', userAuth, profileController.resendChangeEmailOtp);
+router.get('/new-email', userAuth, profileController.getNewEmail);
+router.post('/update-email', userAuth, profileController.updateEmail);
+router.post('/change-password', userAuth, profileController.changePassword);
+router.get('/change-password-forgot', userAuth, profileController.changePasswordForgot);
+router.post('/change-password-forgot', userAuth, profileController.changePasswordValid);
+router.post('/verify-changepassword-otp', userAuth, profileController.verifyChangePassOtp)
 
 
 
