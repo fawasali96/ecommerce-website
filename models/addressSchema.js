@@ -20,6 +20,14 @@ const addressSchema = new Schema({
             type: String, 
             required: true
         },
+        street:{
+            type: String,
+            required: true
+        },
+        house: {
+            type: String,
+            required: true
+        },
         landmark: {
             type: String,
             required: true
@@ -29,18 +37,13 @@ const addressSchema = new Schema({
             required: true
         },
         pincode: {
-            type: Number,
+            type: String,
             required: true
         },
         phone: {
             type: String,
             required: true
-        },
-        altPhone: {
-            type: String,
-            required: true
         }
-
     }]
 })
 

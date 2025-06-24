@@ -1,0 +1,185 @@
+
+<%- include("../../views/partials/user/header") %>
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Edit Address</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="/userProfile">Profile<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="/address">Address<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">Edit Address</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container mt-4">
+   <h3 class="mt-3" style="color: #046963; margin-bottom:70px">Edit User Address</h3>
+   <form id="addressForm" method="POST" action="/editAddress?id=<%= address._id.toLocaleString() %>" class="border-0 p-3">
+       <div class="row mb-50">
+           <div class="form-group col-md-4">
+               <label for="addressType">Address Type:</label>
+               <input type="text" class="form-control border-3" id="addressType"  name="addressType" required>
+           </div>
+           <div class="form-group col-md-4">
+               <label for="name">Name:</label>
+               <input type="text" class="form-control border-3" id="name" value="<%= address.name %>" name="name" required>
+           </div>
+           <div class="form-group col-md-4">
+               <label for="phone">Phone:</label>
+               <input type="text" class="form-control border-3" id="phone" value="<%= address.phone %>" name="phone" required>
+           </div>
+       </div>
+       <div class="row mb-3">
+           
+           <div class="form-group col-md-4">
+               <label for="house">Flat, House no., Building:</label>
+               <input type="text" class="form-control border-3" id="house" value="<%= address.house %>" name="house" required>
+           </div>
+           <div class="form-group col-md-4">
+            <label for="street">Street:</label>
+                <input type="text" class="form-control border-3" id="street" value="<%= address.street %>" name="street" required>  
+          </div>
+          <div class="form-group col-md-4">
+               <label for="landmark">Landmark:</label>
+               <input type="text" class="form-control border-3" id="landmark" value="<%= address.landmark %>" name="landmark" required>
+           </div>
+        
+       </div>
+       <div class="row mb-3">
+           <div class="form-group col-md-4">
+               <label for="pincode">Pincode:</label>
+               <input type="text" class="form-control border-3" id="pincode" value="<%= address.pincode %>" name="pincode" required>
+           </div>
+           <div class="form-group col-md-4">
+               <label for="city">City:</label>
+               <input type="text" class="form-control border-3" id="city" value="<%= address.city %>" name="city" required>
+           </div>
+           <div class="form-group col-md-4">
+               <label for="state">State:</label>
+               <input type="text" class="form-control border-3" id="state" value="<%= address.state %>" name="state" required>
+           </div>
+       </div>
+       <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
+   </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+   document.getElementById('addressForm').addEventListener('submit', function(event) {
+       if (!validateForm()) {
+           event.preventDefault();
+       }
+   });
+
+   function validateForm() {
+       let isValid = true;
+       const requiredFields = ["addressType", "name", "street", "house", "city", "landmark", "state", "pincode", "phone"];
+       requiredFields.forEach(function(field) {
+           const input = document.getElementById(field);
+           const inputValue = input.value.trim();
+           const errorElement = document.getElementById(field + '-error');
+
+           if (inputValue === "") {
+               if (!errorElement) {
+                   const errorMessage = "This field is required.";
+                   const errorDiv = document.createElement('div');
+                   errorDiv.className = "text-danger";
+                   errorDiv.textContent = errorMessage;
+                   errorDiv.id = field + '-error';
+                   input.parentNode.appendChild(errorDiv);
+               }
+               isValid = false;
+           } else {
+               if (errorElement) {
+                   errorElement.remove();
+               }
+           }
+       });
+
+       const namePattern = /^[A-Za-z\s]+$/;
+       const pincodePattern = /^\d{6}$/;
+       const phonePattern = /^\d{10}$/;
+       const houseNumberPattern = /^[A-Za-z0-9\s]+$/;
+
+       const addressType = document.getElementById('addressType').value;
+       const name = document.getElementById('name').value;
+       const street = document.getElementById('street').value;
+       const house = document.getElementById('house').value;
+       const city = document.getElementById('city').value;
+       const landmark = document.getElementById('landmark').value;
+       const state = document.getElementById('state').value;
+       const pincode = document.getElementById('pincode').value;
+       const phone = document.getElementById('phone').value;
+
+       if (!namePattern.test(name)) {
+           Swal.fire({
+               title: 'Error',
+               text: 'Name should contain alphabets only.',
+               icon: 'error'
+           });
+           isValid = false;
+       }
+       if (!namePattern.test(street)) {
+           Swal.fire({
+               title: 'Error',
+               text: 'Street Address should contain alphabets only.',
+               icon: 'error'
+           });
+           isValid = false;
+       }
+       if (!houseNumberPattern.test(house)) {
+           Swal.fire({
+               title: 'Error',
+               text: 'House number should contain alphabets and numbers only.',
+               icon: 'error'
+           });
+           isValid = false;
+       }
+       if (!namePattern.test(city)) {
+           Swal.fire({
+               title: 'Error',
+               text: 'City should contain alphabets only.',
+               icon: 'error'
+           });
+           isValid = false;
+       }
+       if (!namePattern.test(landmark)) {
+           Swal.fire({
+               title: 'Error',
+               text: 'Landmark should contain alphabets only.',
+               icon: 'error'
+           });
+           isValid = false;
+       }
+       if (!namePattern.test(state)) {
+           Swal.fire({
+               title: 'Error',
+               text: 'State should contain alphabets only.',
+               icon: 'error'
+           });
+           isValid = false;
+       }
+       if (!pincodePattern.test(pincode)) {
+           Swal.fire({
+               title: 'Error',
+               text: 'Pincode should be a 6-digit number.',
+               icon: 'error'
+           });
+           isValid = false;
+       }
+       if (!phonePattern.test(phone)) {
+           Swal.fire({
+               title: 'Error',
+               text: 'Phone number should be a 10-digit number.',
+               icon: 'error'
+           });
+           isValid = false;
+       }
+       return isValid;
+   }
+</script>
+<%- include("../../views/partials/user/footer") %>
