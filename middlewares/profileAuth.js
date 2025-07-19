@@ -30,13 +30,6 @@ const checkBlockedUser = async (req, res, next) => {
 };
 
 
-function checkLoggedIn(req, res, next) {
-    if (req.session.user) {
-        return res.redirect('/'); 
-    }
-    next();
-}
-
 
 
 
@@ -46,9 +39,5 @@ function checkLoggedIn(req, res, next) {
 module.exports = {
     blockLoggedInUsers,
     checkBlockedUser,
-    checkLoggedIn,
-   
     
-
-
 }

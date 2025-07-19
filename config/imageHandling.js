@@ -1,4 +1,3 @@
-// Image handling and cropping functionality
 let croppers = {};
 
 function previewImage(event, index) {

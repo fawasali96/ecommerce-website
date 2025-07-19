@@ -50,11 +50,12 @@
                            <div class="col-lg-4 mb-4">
                                <label class="form-label">Brand</label>
                                <select class="form-select border" name="brand">
-                                  <%for(let i=0; i<brand.length; i++){%>
-                                       <option value="<%=brand[i].brandName%>">
-                                          <%=brand[i].brandName%>
-                                       </option>
-                                      <%}%>
+                             <% for(let i = 0; i < brand.length; i++) { %>
+                               <option value="<%= brand[i].brandName %>" 
+                               <%= brand[i].brandName === product.brand ? 'selected' : '' %>>
+                               <%= brand[i].brandName %>
+                               </option>
+                               <% } %>
                                </select>
                                <div id="brand-error" class="error-message"></div>
 
@@ -67,18 +68,18 @@
                                    <div id="description-error" class="error-message"></div>
                            </div>
                            <div class="row">
-                               <div class="col-lg-4">
+                            <div class="col-lg-4">
                                    <div class="mb-4">
                                        <label class="form-label">Regular price</label>
-                                       <input placeholder="$" name="regularPrice" type="text"
-                                           value="<%=product.salePrice%>" class="form-control border">
+                                       <input name="regularPrice" type="text" value="<%=product.regularPrice%>"
+                                           class="form-control border">
                                            <div id="regularPrice-error" class="error-message"></div>
                                    </div>
                                </div>
                                <div class="col-lg-4">
                                    <div class="mb-4">
                                        <label class="form-label">Sale price</label>
-                                       <input name="salePrice" type="text" value=""
+                                       <input name="salePrice" type="text" value="<%=product.salePrice%>"
                                            class="form-control border">
                                            <div id="salePrice-error" class="error-message"></div>
                                    </div>
@@ -253,17 +254,21 @@ const imageDatas = document.getElementById("imageDatas")?.value?.trim();
                isValid = false;
            }
 
+           if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) <= 0) {
+                  displayErrorMessage('regularPrice-error', 'Please enter a valid non-negative price.');
+                  isValid = false;
+              }
 
 
-
-           if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
-               displayErrorMessage('regularPrice-error', 'Please enter a valid non-negative price.');
-               isValid = false;
-           }
-          if (!/^\d+(\.\d{1,2})?$/.test(saleprice) || parseFloat(saleprice) < 0) {
+          if (!/^\d+(\.\d{1,2})?$/.test(saleprice) || parseFloat(saleprice) <= 0) {
                displayErrorMessage('salePrice-error', 'Please enter a valid non-negative price.');
                isValid = false;
            }
+
+           if (parseFloat(price) < parseFloat(saleprice)) {
+      displayErrorMessage('regularPrice-error', 'Regular price cannot be less than sale price');
+      isValid = false;
+   }
           
            if (color.trim() === "") {
                displayErrorMessage('color-error', 'Please enter a color.');

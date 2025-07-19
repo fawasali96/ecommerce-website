@@ -40,8 +40,14 @@ const userSchema = new Schema({
         default: false
     },
      cart: [{
+    productId: {
         type: Schema.Types.ObjectId,
-        ref: "Cart"
+        ref: "Product"
+    },
+    quantity: {
+        type: Number,
+        default: 1
+    }
     }],
     wallet : {
         type: Number,
@@ -55,8 +61,13 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Order"
     }],
-    referalCode: {
-        type: String
+    referralCode: {
+        type: String,
+        unique: true
+    },
+    referredBy: {
+        type: String,
+        default: null
     },
     redeemed: {
         type: Boolean

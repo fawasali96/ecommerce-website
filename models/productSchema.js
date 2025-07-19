@@ -19,7 +19,7 @@ const productSchema = new Schema({
         ref: "Category",
         required: true
     },
-    regularPrice: {
+    regularPrice:{
         type: Number,
         required: true
     },
@@ -27,7 +27,7 @@ const productSchema = new Schema({
         type: Number,
         required: true
     },
-    productOffer: {
+    productOffer:{
         type: Number,
         default: 0
     },

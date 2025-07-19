@@ -5,22 +5,35 @@ const {v4:uuidv4} = require("uuid");
 const orderSchema = new Schema({
     orderId: {
         type: String,
-        default: () => uuidv4(),
+        default: () => Math.floor(1000000000 + Math.random() * 9000000000).toString(), 
         unique: true
+    },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
     orderedItems: [{
         product: {
-            type: Schema.Types.ObjectId,
-            ref: "Product",
-            required: true
+        type: Schema.Types.ObjectId,
+        ref: "Product",
+        required: true
+    },
+    productName: {
+        type: String },
+    productImages: [{
+        type: String }],
+    quantity: {
+        type: Number,
+        required: true
         },
-        quantity: {
-            type: Number,
-            required: true
+    price: {
+        type: Number,
+        default: 0
         },
-        price: {
-            type: Number,
-            default: 0
+    regularPrice: {
+        type: Number,
+        default: 0
         }
     }],
     totalPrice: {
@@ -31,13 +44,22 @@ const orderSchema = new Schema({
         type: Number,
         default: 0
     },
+    deliveryCharge: {
+        type: Number,
+        default: 50
+    },
     finalAmount: {
        type: Number,
        required: true 
     },
     address: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
+        type: Schema.Types.Mixed, 
+        // ref: "User",
+        required: true
+    },
+    paymentMethod: {
+        type: String,
+        enum: ['cod', 'online', 'wallet'],
         required: true
     },
     invoiceDate: {
@@ -46,12 +68,38 @@ const orderSchema = new Schema({
     status: {
         type: String,
         required: true,
-        enjm: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Return Request", "Returned"]
+        enum: ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled", "Return Requested", "Returning", "Returned"]
+    },
+    cancelReason: {
+        type: String
+    },
+    returnReason: {
+        type: String
+    },
+    returnDescription: {
+        type: String
+    },
+     requestStatus: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending'
+    },
+    rejectionCategory: {
+        type: String
+    },
+    rejectionReason: {
+        type: String
     },
     createdOn: {
         type: Date,
         required: true,
         default: Date.now
+    },
+    updatedOn: {
+        type: Date,
+    },
+    deliveredOn: {
+        type: Date
     },
     couponApplied: {
         type: Boolean,

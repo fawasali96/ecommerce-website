@@ -7,6 +7,23 @@ const path = require("path");
 const sharp = require("sharp");
 
 
+const calculateEffectivePrice = async (product) => {
+  const category = await Category.findById(product.category);
+  const categoryOffer = category ? category.categoryOffer || 0 : 0;
+  const productOffer = product.productOffer || 0;
+
+  const effectiveOffer = Math.max(categoryOffer, productOffer);
+
+  if (effectiveOffer > 0) {
+    const discountedPrice = product.regularPrice * (1 - effectiveOffer / 100);
+    return Math.round(discountedPrice * 100) / 100;
+  }
+
+  // No offer — use manually set salePrice if available
+  return product.salePrice || product.regularPrice;
+};
+
+
 const getProductAddPage = async (req, res) => {
   try {
 
@@ -78,89 +95,96 @@ const addProducts = async (req, res) => {
 }
 
 
+
 const getAllProducts = async (req, res) => {
+  try {
+    const search = req.query.search || "";
+    const page = parseInt(req.query.page) || 1;
+    const limit = 4;
 
-    try {
+    const query = {
+      $or: [
+        { productName: { $regex: new RegExp(".*" + search + ".*", "i") } },
+        { brand: { $regex: new RegExp(".*" + search + ".*", "i") } }
+      ]
+    };
 
-        const search = req.query.search || "";
-        const page = parseInt(req.query.page) || 1;
-        const limit = 4;
+    const productData = await Product.find(query)
+      .sort({ _id: -1 }) // Newest first
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate("category")
+      .exec();
 
-        const productData = await Product.find({
-            $or:[
-                { productName: { $regex: new RegExp(".*" + search + ".*", "i") } },
-                { brand: { $regex: new RegExp(".*" + search + ".*", "i") } }
-            ]
-        }).sort({ _id: -1 }).limit(limit*1).skip((page-1)*limit).populate("category").exec();
+    const count = await Product.countDocuments(query);
+    const totalPages = Math.ceil(count / limit);
+    const category = await Category.find({ isListed: true });
+    const productsWithEffectivePrices = await Promise.all(productData.map(async (product) => {
+      const effectivePrice = await calculateEffectivePrice(product);
+      return {
+        ...product.toObject(),
+        salePrice: effectivePrice
+      };
+    }));
 
-        const count = await Product.find({
-            $or:[
-                { productName: { $regex: new RegExp(".*" + search + ".*", "i") } },
-                { brand: { $regex: new RegExp(".*" + search + ".*", "i") } }
-            ]
-        }).countDocuments();
-
-        const category = await Category.find({isListed:true});
-        const brand = await Brand.find({isBlocked: false});
-
-        if(category && brand) {
-            res.render("products", {
-                data: productData,
-                currentPage: page,
-                totalPages: Math.ceil(count/limit),
-                cat: category,
-                brand: brand
-            })
-        }
-        else {
-            res.render("page-404")
-        }
-
-    } catch (error) {
-        res.redirect("/pageerror")
-        
+    if (category.length > 0) {
+      res.render("products", {
+        data: productsWithEffectivePrices,
+        currentPage: page,
+        totalPages: totalPages,
+        cat: category,
+      });
+    } else {
+      res.render("page-404");
     }
-}
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.render("page-404");
+  }
+};
 
 
 const addProductOffer = async (req, res) => {
-    try {
+  try {
+    const { productId, percentage } = req.body;
+    const product = await Product.findById(productId);
 
-        const {productId, percentage} = req.body;
-        const findProduct = await Product.findOne({_id: productId});
-        const findCategory = await Category.findOne({_id: findProduct.category});
-            if(findCategory.categoryOffer > percentage) {
-                return res.json({status: false, message: "This products category already has a category offer"})
-            }
-
-            findProduct.salePrice = findProduct.salePrice - Math.floor(findProduct.regularPrice * (percentage/100));
-            findProduct.productOffer = parseInt(percentage);
-            await findProduct.save();
-            findCategory.categoryOffer = 0; 
-            await findCategory.save();
-            res.json({status: true})
-    } catch (error) {
-        res.redirect("/pageerror");
-        res.status(500).json({status: false, message: "Internal Server Error"})
+    if (!product) {
+      return res.status(404).json({ status: false, message: "Product not found" });
     }
-}
+
+    product.productOffer = parseInt(percentage);
+    product.salePrice = await calculateEffectivePrice(product);
+    await product.save();
+
+    res.json({ status: true, message: "Offer added successfully" });
+  } catch (error) {
+    console.error("Error in addProductOffer:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};
+
 
 const removeProductOffer = async (req, res) => {
-    try {
+  try {
+    const { productId } = req.body;
+    const product = await Product.findById(productId);
 
-        const {productId} = req.body;
-        const findProduct = await Product.findOne({_id: productId});
-        const percentage = findProduct.productOffer;
-        findProduct.salePrice = findProduct.salePrice + Math.floor(findProduct.regularPrice * (percentage/100))
-        findProduct.productOffer = 0;
-        await findProduct.save();
-        res.json({status: true});
-    } catch (error) {
-
-        res.redirect("/pageerror");
-        
+    if (!product) {
+      return res.status(404).json({ status: false, message: "Product not found" });
     }
-}
+
+    product.productOffer = 0;
+    product.salePrice = await calculateEffectivePrice(product);
+    await product.save();
+
+    res.json({ status: true, message: "Offer removed successfully" });
+  } catch (error) {
+    console.error("Error in removeProductOffer:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};
+
 
 
 const blockProduct = async (req, res) => {
@@ -295,6 +319,7 @@ const deleteSingleImage = async (req, res) => {
 }
 
 module.exports = {
+    calculateEffectivePrice,
     getProductAddPage,
     addProducts,
     getAllProducts,

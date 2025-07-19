@@ -17,6 +17,7 @@ const productDetails = async (req,res) => {
         const productOffer = product.productOffer || 0;
 
         const totalOffer = categoryOffer + productOffer;
+        
 
         const categories = await Category.find({ isListed: true });
         const categoryIds = categories.map(category => category._id.toString());
@@ -34,7 +35,7 @@ const productDetails = async (req,res) => {
             user: userData,
             product: product,
             quantity: product.quantity,
-            totalOffer: totalOffer,
+            totalOffer: totalOffer, 
             category: findCategory
         })
 

@@ -7,6 +7,10 @@ const couponSchema = new Schema({
         required: true,
         unique: true
     },
+    isReferral: {
+        type: Boolean,
+        default: false 
+    },
     createdOn: {
         type: Date,
         default: Date.now,
@@ -16,6 +20,10 @@ const couponSchema = new Schema({
         type: Date,
         required: true
     },
+    reason: {
+        type: String,
+        default: null
+    },
     offerPrice: {
       type: Number,
       required: true  
@@ -24,15 +32,17 @@ const couponSchema = new Schema({
       type: Number,
       required: true
     },
-    isList: {
+    isList:{
         type: Boolean,
         default: true
     },
-    userId: {
-        type: Schema.Types.ObjectId,
-        ref: "User"
-    }
-})
+    
+    userId:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'User'
+    }]
+    
+},)
 
 const Coupon = mongoose.model("Coupon", couponSchema);
 

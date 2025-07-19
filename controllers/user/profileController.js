@@ -181,7 +181,8 @@ const userProfile = async (req, res) => {
         const addressData = await Address.findOne({userId: userId})
         res.render("profile", {
             user: userData,
-            userAddress: addressData
+            userAddress: addressData,
+            referralCode: userData.referralCode
         })
         
     } catch (error) {
@@ -419,57 +420,6 @@ const changePassword = async (req, res) => {
 };
 
 
-const changePasswordForgot = async (req, res) => {
-    try {
-
-        res.render('change-password-forgot');
-        
-    } catch (error) {
-        res.redirect("pageNotFound");
-    }
-}
-
-const changePasswordValid = async (req, res) => {
-    try {
-
-        const {email} = req.body;
-        const userExists = await User.findOne({email});
-        if(userExists) {
-            const otp = generateOtp();
-            const emailSent = await sendVerificationEmail(email, otp);
-            if(emailSent) {
-                req.session.userOtp = otp;
-                req.session.userData = req.body;
-                req.session.email = email;
-                res.render("change-password-otp");
-                console.log("OTP: ", otp);
-                
-            } else {
-                res.json({success: false, message: "Failed to send OTP. Please try again"})
-            }
-        } else {
-            res.render("change-password-forgot", {message: "User with this email does not exists"})
-        }
-        
-    } catch (error) {
-        console.log("Error in validation", error);
-        res.redirect("/pageNotFound");
-        
-    }
-}
-
-const verifyChangePassOtp = async (req, res) => {
-    try {
-        const enteredOtp = req.body.otp;
-        if(enteredOtp === req.session.userOtp) {
-            res.json({success: true, redirectUrl: "/reset-password"})
-        } else {
-            res.json({success: false, message: "OTP not matching"});
-        }
-    } catch (error) {
-        res.status(500).json({success: false, message: "An error occured. Please try again later"});
-    }
-}
 
 const loadAddressPage = async (req,res) => {
     try {
@@ -664,9 +614,6 @@ module.exports = {
     getNewEmail,
     updateEmail,
     changePassword,
-    changePasswordForgot,
-    changePasswordValid,
-    verifyChangePassOtp,
     loadAddressPage,
     addAddress,
     postAddAddress,

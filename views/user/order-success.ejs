@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Successful</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .success-card {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+        }
+        .success-card img {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+        .success-card h2 {
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+        .success-card p {
+            color: #6c757d;
+            margin-bottom: 30px;
+        }
+        .success-card .btn {
+            margin: 5px;
+            padding: 10px 25px;
+            border-radius: 30px;
+        }
+        .success-card .btn:hover {
+           transform: scale(1.05);
+           transition: 0.2s;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="success-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/845/845646.png" alt="Success">
+        <h2>Thank You for Your Order!</h2>
+        <p>Your order has been placed successfully. We appreciate your trust in us.</p>
+        <p><strong>Order ID(s):</strong> <%= orderIds %></p>
+        
+        <a href="/orders" class="btn btn-success">View Order Details</a>
+        <a href="/shop" class="btn btn-outline-primary">Continue Shopping</a>
+    </div>
+
+</body>
+</html>

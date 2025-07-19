@@ -8,17 +8,14 @@
    }
 
 
-       .thumbnails-container {
-           display: flex;
-           overflow-x: auto;
-       }
+   .thumbnails-container {
+      display: flex;
+      overflow-x: auto;
+   }
 
-
-       .thumbnail {
-           margin-right: 10px;
-
-
-       }
+    .thumbnail {
+      margin-right: 10px;
+    }
 </style>
    <section class="content-main">
        <div class="row">
@@ -42,10 +39,8 @@
                                <label class="form-label">Brand</label>
                                <select class="form-select border" name="brand">
                                    <%for(let i=0; i<brand.length; i++){%>
-
                                        <option value="<%=brand[i].brandName%>">
                                            <%=brand[i].brandName%>
-                                         
                                        </option>
                                       <%}%> 
                                     
@@ -59,12 +54,12 @@
                                <div id="description-error" class="error-message"></div>
                            </div>
                            <div class="row">
-                               <div class="col-lg-4">
+                            <div class="col-lg-4">
                                    <div class="mb-4">
                                        <label class="form-label">Regular price</label>
-                                       <input placeholder="$" name="regularPrice" type="text"
-                                           class="form-control border">
-                                           <div id="regularPrice-error" class="error-message"></div>
+                                       <input placeholder="$" name="regularPrice" type="text" class="form-control border">
+                                   
+                                   <div id="regularPrice-error" class="error-message"></div>
                                    </div>
                                </div>
                                <div class="col-lg-4">
@@ -75,6 +70,7 @@
                                    <div id="salePrice-error" class="error-message"></div>
                                    </div>
                                </div>
+                               
                                <div class="col-lg-4">
                                    <div class="mb-4">
                                        <label class="form-label">Quantity</label>
@@ -82,9 +78,6 @@
                                        <div id="quantity-error" class="error-message"></div>
                                    </div>
                                </div>
-                           </div>
-                           <div class="row">
-                              
                                <div class="col-lg-4">
                                    <div class="mb-4">
                                        <label class="form-label">Color</label>
@@ -92,8 +85,8 @@
                                    </div>
                                    <div id="color-error" class="error-message"></div>
                                </div>
-                            
                            </div>
+
                            <div class="card mb-4">
                                <div class="card-body">
                                    <div class="row gx-2">
@@ -102,13 +95,9 @@
                                            <select class="form-select border" style="width: 150px;" name="category">
                                                <%for(let i=0; i<cat.length; i++){%>
                                                    <option value="<%=cat[i].name%>">
-
                                                        <%=cat[i].name%>
-
                                                    </option>
-                                                  <%}%>
-                                                 
-                                                   
+                                                  <%}%>    
                                            </select>
                                            <div id="category-error" class="error-message"></div>
                                        </div>
@@ -125,10 +114,10 @@
                                <div class="row">
                                    <div class="card-body align-items-center" style="margin-bottom: 20px;">
                                        <img src="" alt="" id="imgView1">
-                                                                   <input class="form-control" type="file" name="images" id="input1"
-                                                                       accept="image/png, image/jpeg, image/jpg"
-                                                                       onchange="viewImage1(event), viewImage(event, 1)">
-                                                                       <div id="images-error" class="error-message"></div>
+                                                                <input class="form-control" type="file" name="images" id="input1"
+                                                                    accept="image/png, image/jpeg, image/jpg"
+                                                                    onchange="viewImage1(event), viewImage(event, 1)">
+                                                                    <div id="images-error" class="error-message"></div>
                                                                </div>
                                                                <div class="image-cropper d-flex align-items-center"
                                                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
@@ -140,11 +129,10 @@
                                                            <div class="row">
                                                                <div class="card-body align-items-center" style="margin-bottom: 20px;">
                                                                    <img src="" alt="" id="imgView2">
-
-
                                                                    <input class="form-control" type="file" name="images" id="input2"
                                                                        accept="image/png, image/jpeg, image/jpg"
                                                                        onchange="viewImage2(event),viewImage(event, 2)">
+                                                                       <div id="images-error" class="error-message"></div>
                                                                </div>
                                                                <div class="image-cropper d-flex align-items-center"
                                                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
@@ -156,11 +144,10 @@
                                                            <div class="row">
                                                                <div class="card-body align-items-center" style="margin-bottom: 20px;">
                                                                    <img src="" alt="" id="imgView3">
-
-
                                                                    <input class="form-control" type="file" name="images" id="input3"
                                                                        accept="image/png, image/jpeg, image/jpg"
                                                                        onchange="viewImage3(event),viewImage(event, 3)">
+                                                                       <div id="images-error" class="error-message"></div>
                                                                </div>
                                                                <div class="image-cropper d-flex align-items-center"
                                                                    style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
@@ -172,8 +159,7 @@
                                                        </div>
                            </div>
                            <div>
-                               <button class="btn btn-md rounded font-sm hover-up"  type="button" onclick="validateAndSubmit()
-">Publish</button>
+    <button class="btn btn-md rounded font-sm hover-up"  type="button" onclick="validateAndSubmit()">Publish</button>
                            </div>
                        </form>
                    </div>
@@ -255,41 +241,101 @@ reader.readAsDataURL(input.files[0]);
 const selectedImages = [];
 
 document.getElementById("input1").addEventListener("change", handleFileSelect);
+document.getElementById("input2").addEventListener("change", handleFileSelect);
+document.getElementById("input3").addEventListener("change", handleFileSelect);
+
+
+// function handleFileSelect(event) {
+//     const addedImagesContainer = document.getElementById("addedImagesContainer");
+//     addedImagesContainer.innerHTML = "";
+//     const files = event.target.files;
+//     for(let i = 0; i < files.length; i++) {
+//     const file = files[i];
+//     selectedImages.push(file);
+//     const thumbnail = document.createElement("div");
+//     thumbnail.classList.add("thumbnail")
+
+
+//     const img = document.createElement("img");
+//     img.src = URL.createObjectURL(file);
+//     img.alt = "thumbnail";
+//     img.style.width = "50px"
+//     img.style.height = "auto";
+//     const removeIcon = document.createElement("span");
+//     removeIcon.classList.add("remove-icon")
+//     removeIcon.innerHTML = "&times;";
+//     removeIcon.addEventListener("click", function() {
+//         const index = selectedImages.indexOf(file);
+
+//         if(index !== -1) {
+//             selectedImages.splice(index, 1);
+//         }
+//         thumbnail.remove();
+//     })
+
+//     thumbnail.appendChild(img);
+//     thumbnail.appendChild(removeIcon);
+//     addedImagesContainer.appendChild(thumbnail)
+
+//     }
+// }
 
 function handleFileSelect(event) {
     const addedImagesContainer = document.getElementById("addedImagesContainer");
     addedImagesContainer.innerHTML = "";
     const files = event.target.files;
-    for(let i = 0; i < files.length; i++) {
-    const file = files[i];
-    selectedImages.push(file);
-    const thumbnail = document.createElement("div");
-    thumbnail.classList.add("thumbnail")
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
 
+    // Clear selectedImages array
+    selectedImages.length = 0;
 
-    const img = document.createElement("img");
-    img.src = URL.createObjectURL(file);
-    img.alt = "thumbnail";
-    img.style.width = "50px"
-    img.style.height = "auto";
-    const removeIcon = document.createElement("span");
-    removeIcon.classList.add("remove-icon")
-    removeIcon.innerHTML = "&times;";
-    removeIcon.addEventListener("click", function() {
-        const index = selectedImages.indexOf(file);
-
-        if(index !== -1) {
-            selectedImages.splice(index, 1);
-        }
-        thumbnail.remove();
-    })
-
-    thumbnail.appendChild(img);
-    thumbnail.appendChild(removeIcon);
-    addedImagesContainer.appendChild(thumbnail)
-
+    if (files.length === 0) {
+        displayErrorMessage("images-error", "Please select at least one image.");
+        return;
     }
+
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Check type
+        if (!validTypes.includes(file.type)) {
+            displayErrorMessage("images-error", "Only JPG, JPEG, PNG, or WEBP files are allowed.");
+            event.target.value = ""; // Reset file input
+            return;
+        }
+
+        // If valid, continue
+        selectedImages.push(file);
+        const thumbnail = document.createElement("div");
+        thumbnail.classList.add("thumbnail");
+
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        img.alt = "thumbnail";
+        img.style.width = "50px";
+        img.style.height = "auto";
+
+        const removeIcon = document.createElement("span");
+        removeIcon.classList.add("remove-icon");
+        removeIcon.innerHTML = "&times;";
+        removeIcon.addEventListener("click", function () {
+            const index = selectedImages.indexOf(file);
+            if (index !== -1) {
+                selectedImages.splice(index, 1);
+            }
+            thumbnail.remove();
+            event.target.value = ""; // Reset input after removal
+        });
+
+        thumbnail.appendChild(img);
+        thumbnail.appendChild(removeIcon);
+        addedImagesContainer.appendChild(thumbnail);
+    }
+
+    // Clear any previous error if files are valid
+    displayErrorMessage("images-error", "");
 }
+
 
    function validateForm() {
               clearErrorMessages();
@@ -301,7 +347,7 @@ function handleFileSelect(event) {
               const color = document.getElementsByName('color')[0].value;
               const category = document.getElementsByName('category')[0].value;
               const images = document.getElementById('input1')
-              const quantity = document.getElementsByName('quantity')[0].value;
+              const quantity=document.getElementsByName('quantity')
               let isValid = true
               if (name.trim() === "") {
       displayErrorMessage('productName-error', 'Please enter a product name.');
@@ -319,40 +365,48 @@ function handleFileSelect(event) {
       isValid = false;
    }
   
-            
-            if (quantity.trim() === "") { 
-               displayErrorMessage('quantity-error', 'Quantity cannot be empty.');
-               isValid = false;
-               } else if (isNaN(quantity) || parseInt(quantity) < 0) {
-               displayErrorMessage('quantity-error', 'Please enter a valid non-negative quantity.');
-               isValid = false;
-               }
-
+              if ( parseInt(quantity) < 0) {
+                  displayErrorMessage('quantity-error', 'Please enter a valid non-negative quantity.');
+                  isValid = false;
+              }
   
-              if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) < 0) {
+
+              if (!/^\d+(\.\d{1,2})?$/.test(price) || parseFloat(price) <= 0) {
                   displayErrorMessage('regularPrice-error', 'Please enter a valid non-negative price.');
                   isValid = false;
               }
   
-              if (!/^\d+(\.\d{1,2})?$/.test(saleprice) || parseFloat(saleprice) < 0) {
+  
+              if (!/^\d+(\.\d{1,2})?$/.test(saleprice) || parseFloat(saleprice) <= 0) {
                   displayErrorMessage('salePrice-error', 'Please enter a valid non-negative price.');
                   isValid = false;
               }
-
-              if (parseFloat(price) <= parseFloat(saleprice)) {
-      displayErrorMessage('regularPrice-error', 'Regular price must be greater than sale price.');
+              if (parseFloat(price) < parseFloat(saleprice)) {
+      displayErrorMessage('regularPrice-error', 'Regular price cannot be less than sale price');
       isValid = false;
    }
-
+  
+  
               if (color.trim() === "") {
                   displayErrorMessage('color-error', 'Please enter a color.');
                   isValid = false;
               }
   
+  
               if (images.files.length === 0) {
                   displayErrorMessage("images-error",'Please select an image.');
                   isValid = false;
-              }
+              } else {
+                  const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+                  for (let i = 0; i < images.files.length; i++) {
+                  const file = images.files[i];
+                 if (!validTypes.includes(file.type)) {
+                 displayErrorMessage("images-error", 'Only JPG, JPEG, PNG, or WEBP files are allowed.');
+                isValid = false;
+                break;
+        }
+    }
+}
               return isValid;
           }
 
@@ -369,14 +423,12 @@ function handleFileSelect(event) {
               Array.from(errorElements).forEach(element => {
                   element.innerText = '';
               });
-              const errorMessage = document.getElementById('errorMessage');
+              const errorMessage = document.getElementById('errorMessage')
+  
           }
-
 
 </script>
 
-
-     
 <%- include("../../views/partials/admin/footer") %>
 
 

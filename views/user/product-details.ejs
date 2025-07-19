@@ -104,11 +104,6 @@ body {
   margin-bottom: 15px;
 }
 
-.product-price span {
-  font-size: 22px;
-  color: #28a745;
-}
-
 .old-price {
   text-decoration: line-through;
   color: #999;
@@ -248,11 +243,9 @@ body {
             </div>
 
             <div class="product-price-cover">
-              <span class="text-brand">₹<%= product.salePrice %></span>
-              <span class="old-price">₹<%= product.regularPrice %></span>
-              <span class="save-price">
-                <% if (!totalOffer) { %>No Offers<% } else { %><%= totalOffer %>% Offer<% } %>
-              </span>
+               <span style="color: #28a745; font-size: 22px;">₹<%= Math.round(product.salePrice) %></span>
+               <span class="old-price font-md ml-15">₹<%= product.regularPrice %></span>
+               <span> <%=product.category.categoryOffer> product.productOffer ? product.category.categoryOffer : product.productOffer %> % Off</span>
             </div>
 
             <div class="short-desc">
@@ -268,20 +261,18 @@ body {
             </div>
 
             <div class="detail-extralink">
-              <div class="detail-qty" data-max="<%= quantity %>"> 
-                <span class="qty-val" id="quantity">1</span>
-                <div class="qty-icon">
-                  <a class="qty-up"><i class="fas fa-angle-up"></i></a>
-                  <a class="qty-down"><i class="fas fa-angle-down"></i></a>
-                </div>
-                
-              </div>
               <div class="product-extra-link2">
-                <button class="button-add-to-cart">Add to cart</button>
-                <a href="/wishlist"><i class="fa-regular fa-heart text-success"></i>
-</a>
+                <% if (product.isBlocked || !product.category.isListed || quantity <= 0) { %>
+                 <button class="button-add-to-cart" disabled>Add to cart</button>
+                 <% } else { %>
+                 <button class="button-add-to-cart" onclick="addToCart('<%=product._id%>')">Add to cart</button>
+                 <% } %>
+
+                <a class="icon_btn d-inline-block" onclick="addToWishlist('<%=product._id%>')"  href="#">
+                  <i class="fa-regular fa-heart text-success"></i>
+                </a>
               </div>
-            </div>
+            </div> 
 
             <ul style="list-style: none" class="product-meta">
               <li>Stock Code: <span class="text-success">FWM15VKT</span></li>
@@ -302,6 +293,9 @@ body {
   </section>
 </main>
 
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const mainImage = document.getElementById("main-image");
@@ -321,27 +315,120 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-const qtyContainer = document.querySelector('.detail-qty');
-const maxQuantity = parseInt(qtyContainer.dataset.max);
 
-const qtyUp = document.querySelector('.qty-up');
-const qtyDown = document.querySelector('.qty-down');
-const qtyVal = document.getElementById('quantity');
 
-qtyUp.addEventListener('click', () => {
-  let currentQty = parseInt(qtyVal.textContent);
-  if (currentQty < maxQuantity) {
-    qtyVal.textContent = currentQty + 1;
-  }
-  // No action if limit is reached
-});
+function handleAuthError(title, message) {
+  return Swal.fire({
+    title: title,
+    text: message,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Login",
+    cancelButtonText: "Cancel",
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = "/login";
+    }
+  });
+}
 
-qtyDown.addEventListener('click', () => {
-  let currentQty = parseInt(qtyVal.textContent);
-  if (currentQty > 1) {
-    qtyVal.textContent = currentQty - 1;
-  }
-});
+function addToWishlist(productId) {
+  $.ajax({
+    url: "/addToWishlist",
+    method: "POST",
+    data: {productId: productId},
+    success: (response) => {
+      if(response.status) {
+        Swal.fire({
+          title: "Added to the wishlist",
+          text: "The product has been added to your wishlist",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false
+        });
+      } else {
+        Swal.fire({
+          title: "Already in Wishlist",
+          text: response.message,
+          icon: "info",
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+    },
+    error: (xhr) => {
+      if (xhr.status === 401) {
+        handleAuthError(
+          "Not Logged In",
+          "You need to log in to add items to your wishlist."
+        );
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "There was an error adding the product to your wishlist.",
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+    }
+  })
+}
+
+
+function addToCart(productId) {
+  $.ajax({
+    url: '/addToCart',
+    method: "POST",
+    data: { productId: productId },
+    success: (response) => {
+      if (response.status) {
+        Swal.fire({
+			title: "Added to Cart",
+			text: response.message,
+			icon: "success",
+			showCancelButton: true,  // Enables the second button
+			confirmButtonText: "Cart", // Redirects to cart
+			cancelButtonText: "OK",  // Closes the alert
+			timer: 2000
+		}).then((result) => {
+			if (result.isConfirmed) {
+				window.location.href = "/cart"; // Redirects to the cart page
+			} else {
+				location.reload(); // Reload to update cart UI
+			}
+		});
+
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: response.message || "Unable to add to cart",
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+    },
+    error: (xhr) => {
+      if (xhr.status === 401) {
+        handleAuthError(
+          "Not Logged In",
+          "You need to log in to add items to your cart."
+        );
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "Stock limit reached or maximum 5 items per user",
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+    }
+  });
+}
+
 
 
 </script>

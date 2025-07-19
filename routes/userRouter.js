@@ -5,27 +5,33 @@ const passport = require('passport');
 const userController = require('../controllers/user/userController');
 const productController = require("../controllers/user/productController");
 const profileController = require('../controllers/user/profileController');
+const cartController = require("../controllers/user/cartController");
+const checkoutController = require("../controllers/user/checkoutController");
+const orderController = require("../controllers/user/orderController");
+const wishlistController = require("../controllers/user/wishlistController");
+const couponController = require("../controllers/user/couponController")
+
 const multer = require("multer");
 const storage = require("../helpers/multer");
 const uploads = multer({storage: storage});
 
-const { userAuth,addCartWishlist,checkUserAuthWish,ajaxAuth } = require('../middlewares/auth');
-const {blockLoggedInUsers, checkBlockedUser,checkLoggedIn} = require("../middlewares/profileAuth")
+const { userAuth } = require('../middlewares/auth');
+const {checkBlockedUser} = require("../middlewares/profileAuth")
 
 
-router.get('/pagenotfound', userController.pageNotFound);
+router.get('/pageNotFound', userController.pageNotFound);
 
 
-router.get('/signup',checkLoggedIn, userController.loadSignUpPage);
+router.get('/signup',userController.loadSignUpPage);
 
-router.post('/signup',checkLoggedIn, userController.signUp);
+router.post('/signup', userController.signUp);
 
 router.post('/verify-otp', userController.verifyOtp);
 
 router.post('/resend-otp', userController.resendOtp);
 
 
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], prompt: 'select_account' }));
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/signup' }), async (req, res) => {
     try {
         req.session.user = req.user._id;
@@ -37,15 +43,11 @@ router.get('/auth/google/callback', passport.authenticate('google', { failureRed
 });
 
 
-router.get('/login',checkLoggedIn, userController.loadLoginPage);
+router.get('/login', userController.loadLoginPage);
 
-router.post('/login',checkLoggedIn, userController.login);
+router.post('/login',userController.login);
 
 router.get('/',checkBlockedUser, userController.loadHomePage);
-// router.get('/shop', userAuth, userController.loadShoppingPage);
-// router.get("/filter", userAuth, userController.filterProduct);
-// router.get("/filterPrice", userAuth, userController.filterByPrice);
-// router.post('/search', userAuth, userController.searchProducts);
 router.get('/shop', userAuth, userController.getFilteredProducts);
 
 
@@ -70,9 +72,6 @@ router.post('/resend-changeemail-otp', userAuth, profileController.resendChangeE
 router.get('/new-email', userAuth, profileController.getNewEmail);
 router.post('/update-email', userAuth, profileController.updateEmail);
 router.post('/change-password', userAuth, profileController.changePassword);
-router.get('/change-password-forgot', userAuth, profileController.changePasswordForgot);
-router.post('/change-password-forgot', userAuth, profileController.changePasswordValid);
-router.post('/verify-changepassword-otp', userAuth, profileController.verifyChangePassOtp);
 
 
 router.get("/address", userAuth, profileController.loadAddressPage);
@@ -82,8 +81,36 @@ router.get('/editAddress', userAuth, profileController.editAddress);
 router.post("/editAddress", userAuth, profileController.postEditAddress);
 router.get("/deleteAddress", userAuth, profileController.deleteAddress);
 
+router.get('/wishlist', userAuth, wishlistController.loadWishlist);
+router.post('/addToWishlist', userAuth, wishlistController.addToWishlist);
+router.get('/removeFromWishlist', userAuth, wishlistController.removeProduct);
 
 
 
+router.get("/cart", userAuth, cartController.getCartPage);
+router.post("/addToCart", userAuth, cartController.addToCart);
+router.post("/changeQuantity", userAuth, cartController.changeQuantity);
+router.get("/deleteItem", userAuth, cartController.deleteProduct);
+
+router.get("/checkout", userAuth, checkoutController.loadCheckoutPage);
+router.get("/addAddressCheckout",userAuth,checkoutController.addAddressCheckout);
+router.post("/addAddressCheckout",userAuth,checkoutController.postAddAddressCheckout);
+router.get('/check-stock',userAuth, checkoutController.checkStock);
+
+router.get('/order-success', userAuth, orderController.orderSuccessPage);
+router.post("/placeOrder", userAuth, orderController.placeOrder);
+router.get("/orders", userAuth, orderController.getOrders);
+router.get("/order-details", userAuth, orderController.loadOrderDetails);
+
+router.post('/create-razorpay-order', userAuth, orderController.createRazorpayOrder);
+router.post('/verify-payment', userAuth, orderController.verifyPayment);
+
+router.get("/download-invoice", userAuth, orderController.generateInvoice);
+router.post("/orders/cancel", userAuth, orderController.cancelOrder);
+router.post("/orders/return", userAuth, orderController.requestReturn);
+
+
+router.get("/mycoupons",userAuth,couponController.loadCoupons);
+router.post("/apply-coupon", userAuth, checkoutController.applyCoupon);
 
 module.exports = router;
