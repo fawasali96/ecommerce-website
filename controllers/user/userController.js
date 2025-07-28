@@ -119,7 +119,7 @@ const signUp = async (req, res) => {
    
     try {
         const { name, email, phone, password, cPassword } = req.body
-        // const referralCode = req.query.ref || req.body.referralCode || null;
+        
         const referralCode = req.session.referral || null;
 
         
@@ -167,7 +167,6 @@ const securePassword = async (password) => {
 }
 
 
-
 const verifyOtp = async (req, res) => {
   try {
     const { otp } = req.body;
@@ -201,14 +200,15 @@ const verifyOtp = async (req, res) => {
           referrer.redeemedUsers.push(savedUser._id);
 
           await Coupon.create({
-            userId: referrer._id,
+            userId: [referrer._id],
             name: `REF${referrer._id.toString().slice(-4)}${Date.now().toString().slice(-4)}`,
             offerPrice: 100,
             minimumPrice: 500,
             createdOn: new Date(),
             expireOn: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             reason: "Referral Reward",
-            isReferral: true
+            isReferral: true,
+            isUsed: false
           });
 
           await referrer.save();

@@ -36,6 +36,8 @@ const createCoupon = async (req, res) => {
             expireOn: data.endDate,
             offerPrice: data.offerPrice,
             minimumPrice: data.minimumPrice,
+            userId: [],             
+            isReferral: false    
         })
 
         await newCoupon.save();
@@ -79,7 +81,9 @@ const updateCoupon = async (req, res) => {
                         createdOn: startDate,
                         expireOn: endDate,
                         offerPrice: parseInt(req.body.offerPrice),
-                        minimumPrice: parseInt(req.body.minimumPrice)
+                        minimumPrice: parseInt(req.body.minimumPrice),
+                        userId: [],             
+                        isReferral: false  
                     }
                 }, {new: true}
 

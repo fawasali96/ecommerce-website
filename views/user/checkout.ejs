@@ -1,7 +1,5 @@
 <%- include("../../views/partials/user/header") %>
 
- <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
-
  <!-- Start Banner Area -->
  <section class="banner-area organic-breadcrumb">
     <div class="container">
@@ -361,6 +359,7 @@ async function placeOrder() {
     try {
         const selectedAddress = document.getElementById('existingAddress');
         const paymentMethod = document.querySelector('input[name="payment"]:checked');
+        const grandTotal = parseFloat(document.getElementById('grandTotal').textContent);
 
         if (!selectedAddress || selectedAddress.value === 'Select an address') {
             Swal.fire('Error', 'Please select a shipping address', 'error');
@@ -369,6 +368,11 @@ async function placeOrder() {
 
         if (!paymentMethod) {
             Swal.fire('Error', 'Please select a payment method', 'error');
+            return;
+        }
+
+        if (paymentMethod.value === 'cod' && grandTotal > 1000) {
+            Swal.fire('COD Not Allowed', 'Cash on Delivery is not available for orders above ₹1000.', 'error');
             return;
         }
 
@@ -445,36 +449,7 @@ function proceedWithOrder() {
     }
 }
 
-// function processCODOrder(orderData) {
-//     fetch('/placeOrder', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(orderData)
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.success) {
-//             Swal.fire({
-//                 title: 'Order Placed Successfully!',
-//                 text: `Order IDs: ${data.orderIds.join(", ")}`,
-//                 icon: 'success',
-//                 confirmButtonText: 'View Orders'
-//             }).then((result) => {
-//                 if (result.isConfirmed) {
-//                     window.location.href = '/orders';
-//                 }
-//             });
-//         } else {
-//             Swal.fire('Error', data.message || 'An error occurred while placing the order', 'error');
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//         Swal.fire('Error', 'An error occurred while placing the order', 'error');
-//     });
-// }
+
 
 function processCODOrder(orderData) {
     fetch('/placeOrder', {
@@ -545,65 +520,7 @@ function processRazorpayOrder(orderData) {
     });
 }
 
-// function verifyPayment(paymentResponse, orderData) {
-//     fetch('/verify-payment', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//             paymentResponse,
-//             orderData
-//         })
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.success) {
-//             Swal.fire({
-//                 title: 'Payment Successful!',
-//                 text: `Order IDs: ${data.orderIds.join(", ")}`,
-//                 icon: 'success',
-//                 confirmButtonText: 'View Orders'
-//             }).then((result) => {
-//                 if (result.isConfirmed) {
-//                     window.location.href = '/orders';
-//                 }
-//             });
-//         } else {
-//             Swal.fire('Error', data.message || 'Payment verification failed', 'error');
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//         Swal.fire('Error', 'An error occurred while verifying the payment', 'error');
-//     });
-// }
 
-// function verifyPayment(paymentResponse, orderData) {
-//     fetch('/verify-payment', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//             paymentResponse,
-//             orderData
-//         })
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         if (data.success) {
-//             const orderIdsParam = encodeURIComponent(data.orderIds.join(","));
-//             window.location.href = `/order-success?orderIds=${orderIdsParam}`;
-//         } else {
-//             Swal.fire('Error', data.message || 'Payment verification failed', 'error');
-//         }
-//     })
-//     .catch(error => {
-//         console.error('Error:', error);
-//         Swal.fire('Error', 'An error occurred while verifying the payment', 'error');
-//     });
-// }
 
 
 function verifyPayment(paymentResponse, orderData) {

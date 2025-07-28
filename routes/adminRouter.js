@@ -68,7 +68,8 @@ router.post('/orders/cancel', adminAuth, orderController.cancelOrder);
 router.get('/sales', adminAuth, salesController.loadSalesPage);
 router.get('/sales/report', adminAuth, salesController.loadSalesPage);
 
-
+router.get("/api/sales-data", adminAuth, adminController.getSalesData)
+router.get("/api/top-selling", adminAuth, adminController.getTopSelling)
 router.get("/dashboard",adminAuth,async (req,res)=>{
     try {
         res.redirect("/admin")

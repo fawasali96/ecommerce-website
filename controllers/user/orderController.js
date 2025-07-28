@@ -79,11 +79,11 @@ const placeOrder = async (req, res) => {
 
     if (couponCode) {
       const coupon = await Coupon.findOne({ name: couponCode, isList: true })
-      if (coupon && !coupon.userId.includes(userId)) {
+        if (coupon && !coupon.userId.includes(userId)) {
         discount = coupon.offerPrice
         couponApplied = true
         await Coupon.findByIdAndUpdate(coupon._id, {
-          $push: { userId: userId },
+          userId: userId
         })
       }
     }

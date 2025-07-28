@@ -10,13 +10,12 @@ const loadCoupons = async (req, res) => {
 
         const coupons = await Coupon.find({
       $or: [
-        { userId: userId }, 
-        { isList: true }    
+        { isReferral: false }, 
+        {isReferral: true, userId: userId }   
       ],
       expireOn: { $gt: currentDate },
     }).sort({ createdOn: -1 }); 
 
-   
     const couponsWithStatus = coupons.map(coupon => {
       const isUsed = coupon.userId.includes(userId);
       return {
@@ -25,8 +24,6 @@ const loadCoupons = async (req, res) => {
         usageMessage: isUsed ? "Already used, can't use this coupon" : "Available to use"
       };
     });
-    
-
 
     res.render("my-coupons", {
       coupons: couponsWithStatus,

@@ -13,7 +13,6 @@ const loadSalesPage = async (req, res) => {
   try {
       const { reportType, startDate, endDate, format } = req.query;
       let query = {};
-      
       const now = new Date();
       switch (reportType) {
           case 'daily':

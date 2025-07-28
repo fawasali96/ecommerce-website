@@ -36,10 +36,14 @@ const couponSchema = new Schema({
         type: Boolean,
         default: true
     },
-    
+    isUsed: {
+        type: Boolean,
+        default: false
+    },
     userId:[{
         type: mongoose.Schema.Types.ObjectId,
-        ref:'User'
+        ref:'User',
+        default: null
     }]
     
 },)

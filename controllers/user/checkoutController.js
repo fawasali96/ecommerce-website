@@ -34,7 +34,6 @@ const loadCheckoutPage = async (req, res) => {
       }
       await user.save();
 
-      // Filter out blocked products, unlisted categories, and products with quantity <= 0
       const cartItems = user.cart
           .filter(item => 
               item.productId && 
@@ -50,7 +49,7 @@ const loadCheckoutPage = async (req, res) => {
           }));
 
       const subtotal = cartItems.reduce((total, item) => total + item.totalPrice, 0);
-      const shippingCharge = 0; // Free shipping
+      const shippingCharge = 0; 
       const grandTotal = subtotal + shippingCharge;
 
       res.render("checkout", {
@@ -128,7 +127,7 @@ const applyCoupon = async (req, res) => {
             return res.json({ success: false, message: `Minimum purchase amount should be ₹${coupon.minimumPrice}` });
         }
 
-        if (coupon.userId.includes(userId)) {
+        if (coupon.userId && coupon.userId.includes(userId)) {
             return res.json({ success: false, message: 'You have already used this coupon' });
         }
 
@@ -168,7 +167,7 @@ const checkStock = async (req, res) => {
             };
         });
 
-        // Update cart quantities if needed
+       
         for (const item of stockChanges) {
             if (item.stockChanged) {
                 await User.updateOne(
