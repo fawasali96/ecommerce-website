@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
@@ -15,7 +14,7 @@ const multer = require("multer");
 const storage = require("../helpers/multer");
 const uploads = multer({storage: storage});
 
-const { userAuth } = require('../middlewares/auth');
+const { userAuth, ajaxAuth } = require('../middlewares/auth');
 const {checkBlockedUser} = require("../middlewares/profileAuth")
 
 
@@ -47,7 +46,7 @@ router.get('/login', userController.loadLoginPage);
 
 router.post('/login',userController.login);
 
-router.get('/',checkBlockedUser, userController.loadHomePage);
+router.get('/', checkBlockedUser, userController.loadHomePage);
 router.get('/shop', userAuth, userController.getFilteredProducts);
 
 
@@ -82,13 +81,13 @@ router.post("/editAddress", userAuth, profileController.postEditAddress);
 router.get("/deleteAddress", userAuth, profileController.deleteAddress);
 
 router.get('/wishlist', userAuth, wishlistController.loadWishlist);
-router.post('/addToWishlist', userAuth, wishlistController.addToWishlist);
+router.post('/addToWishlist', ajaxAuth, wishlistController.addToWishlist);
 router.get('/removeFromWishlist', userAuth, wishlistController.removeProduct);
 
 
 
 router.get("/cart", userAuth, cartController.getCartPage);
-router.post("/addToCart", userAuth, cartController.addToCart);
+router.post("/addToCart", ajaxAuth, cartController.addToCart);
 router.post("/changeQuantity", userAuth, cartController.changeQuantity);
 router.get("/deleteItem", userAuth, cartController.deleteProduct);
 

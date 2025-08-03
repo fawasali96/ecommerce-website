@@ -64,6 +64,7 @@ const getCartPage = async (req, res) => {
 const addToCart = async (req, res) => {
   try {
     const productId = req.body.productId;
+    const fromWishlist = req.body.fromWishlist === true || req.body.fromWishlist === "true";
     const userId = req.session.user;
 
     const user = await User.findById(userId);
@@ -103,9 +104,14 @@ const addToCart = async (req, res) => {
       user.cart[cartItemIndex].quantity += 1;
       newQuantity = user.cart[cartItemIndex].quantity;
     } else {
-      // Add new product to cart
+      
       user.cart.push({ productId: productId, quantity: 1 });
       newQuantity = 1;
+    }
+
+    // Remove from wishlist if the request came from wishlist
+    if (fromWishlist) {
+      user.wishlist = user.wishlist.filter(item => item.toString() !== productId);
     }
 
     await user.save();

@@ -3,12 +3,13 @@ const User = require("../../models/userSchema");
 
 const loadCoupons = async (req, res) => {
   try {
+
     const userId = req.session.user;
     const userData = await User.findById(userId);
 
     const currentDate = new Date();
 
-        const coupons = await Coupon.find({
+    const coupons = await Coupon.find({
       $or: [
         { isReferral: false }, 
         {isReferral: true, userId: userId }   
@@ -17,13 +18,20 @@ const loadCoupons = async (req, res) => {
     }).sort({ createdOn: -1 }); 
 
     const couponsWithStatus = coupons.map(coupon => {
-      const isUsed = coupon.userId.includes(userId);
-      return {
-        ...coupon.toObject(), 
-        isUsed: isUsed,
-        usageMessage: isUsed ? "Already used, can't use this coupon" : "Available to use"
-      };
-    });
+    let isUsed;
+
+    if (coupon.isReferral) {
+    isUsed = coupon.isUsed;
+  } else {
+    isUsed = coupon.userId.includes(userId); 
+  }
+
+    return {
+    ...coupon.toObject(),
+    isUsed,
+    usageMessage: isUsed ? "Already used, can't use this coupon" : "Available to use"
+  };
+});
 
     res.render("my-coupons", {
       coupons: couponsWithStatus,

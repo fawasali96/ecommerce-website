@@ -65,6 +65,15 @@
             object-fit: cover;
             border-radius: 5px;
 }
+    .product-name a {
+            color: #000; /* normal state */
+            text-decoration: none;
+}
+
+    .product-name a:hover {
+            color: #ff6b6b; /* or any color visible on your background */
+}
+
 
         /* General container and section styling */
 @media (max-width: 1200px) {
@@ -143,19 +152,19 @@
         text-align: left;
         padding: 8px 0;
         border: none;
-        position: relative; /* For better positioning */
+        position: relative; 
     }
 
-    /* Ensure data-title is applied correctly */
+    
     .shopping-summery tbody td::before {
         content: attr(data-title) ": ";
         font-weight: bold;
         display: inline-block;
-        width: 80px; /* Adjusted width for better spacing */
+        width: 80px; 
         vertical-align: top;
     }
 
-    /* Specific styling for Image column */
+    
     .shopping-summery .image {
         display: flex;
         align-items: center;
@@ -163,41 +172,41 @@
     }
 
     .shopping-summery .image::before {
-        content: "Image: "; /* Explicitly set label */
+        content: "Image: "; 
         font-weight: bold;
         width: 80px;
         flex-shrink: 0;
     }
 
     .shopping-summery .image img {
-        max-width: 80px; /* Smaller image for mobile */
+        max-width: 80px; 
         height: auto;
         display: block;
     }
 
-    /* Specific styling for Name column */
+    
     .shopping-summery .product-des {
         padding: 10px 0;
     }
 
     .shopping-summery .product-des::before {
-        content: "Name: "; /* Explicitly set label */
+        content: "Name: "; 
         font-weight: bold;
         width: 80px;
         display: inline-block;
     }
 
     .shopping-summery .product-des h5 {
-        display: inline; /* Keep name inline with label */
+        display: inline; 
         margin: 0;
     }
 
     .shopping-summery .product-des p {
-        margin: 5px 0 0 80px; /* Align category/brand under name */
+        margin: 5px 0 0 80px; 
         font-size: 12px;
     }
 
-    /* Ensure other columns remain visible */
+    
     .shopping-summery .price::before {
         content: "Price: ";
     }
@@ -271,11 +280,7 @@
     <div class="container">
         <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
             <div class="col-first">
-                <h1>Shopping Cart</h1>
-                <nav class="d-flex align-items-center">
-                    <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="/cart">Cart</a>
-                </nav>
+                <h2>Shopping Cart</h2>
             </div>
         </div>
     </div>
@@ -332,7 +337,7 @@
     <% } %>
   </td>
                                             <td class="action" data-title="Remove">
-                                                <a class="btn btn-sm" href="#" onclick="confirmRemove('<%= item.product._id %>')">
+                                                <a class="btn btn-sm btn-danger" href="#" onclick="confirmRemove('<%= item.product._id %>')">
                                                     <i class="fi-rs-trash">Remove</i>
                                                 </a>
                                             </td>
@@ -369,7 +374,16 @@
                             <span>Total</span>
                             <span class="font-semibold text-blue">₹ <%= Math.round(grandTotal)+50 %></span>
                         </div>
-                        <a href="/checkout" class="w-full bg-yellow text-white py-2 px-2 rounded mb-4">Proceed To Checkout</a>
+                        <% if (cartItems && cartItems.length > 0) { %>
+                           <a href="/checkout" class="w-full bg-yellow text-white py-2 px-2 rounded mb-4">
+                             Proceed To Checkout
+                          </a>
+                        <% } else { %>
+                           <button class="w-full bg-yellow text-white py-2 px-2 rounded mb-4" disabled>
+                             Proceed To Checkout
+                          </button>
+                        <% } %>
+
                         <br>
                         <a href="/shop" class="block text-center text-blue mt-3">Continue Shopping</a>
                         
@@ -439,8 +453,16 @@
                     method: 'GET',
                     success: (response) => {
                         if (response.status) {
-                            Swal.fire('Removed!', response.message, 'success');
-                            location.reload(); // Refresh the page after removing the item
+                            Swal.fire({
+                               title: 'Removed!',
+                               text: response.message,
+                               icon: 'success',
+                               timer: 1500,  
+                               showConfirmButton: false
+                        }).then(() => {
+                           location.reload(); 
+                        });
+
                         } else {
                             Swal.fire('Error', response.message, 'error');
                         }

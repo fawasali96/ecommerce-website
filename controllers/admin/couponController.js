@@ -32,7 +32,7 @@ const createCoupon = async (req, res) => {
 
         const newCoupon = new Coupon({
             name: data.couponName,
-            createdOn: data.startDate,
+            createdOn: new Date(),
             expireOn: data.endDate,
             offerPrice: data.offerPrice,
             minimumPrice: data.minimumPrice,

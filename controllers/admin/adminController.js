@@ -87,7 +87,7 @@ const loadDashboard = async (req, res) => {
   }
 }
 
-const getTopSellingProducts = async (limit = 5) => {
+const getTopSellingProducts = async (limit = 10) => {
   try {
     const topProducts = await Order.aggregate([
       { $match: { status: "Delivered" } },

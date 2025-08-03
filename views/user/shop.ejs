@@ -12,6 +12,11 @@
    margin-bottom: 20px;
  }
 
+ .search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+ }
 
  .search-form {
    display: flex;
@@ -51,6 +56,21 @@
    background-color: #0056b3;
    transform: scale(1.05);
  }
+
+ .clear-button {
+  background-color: #dc3545;
+  color: white;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clear-button:hover {
+  background-color: #b52a37;
+}
+
  .sidebar {
    padding: 20px;
    border: 1px solid #ddd;
@@ -212,6 +232,66 @@
  .category-brand-container {
    text-align: center;
  }
+
+ /* For tablets (max-width: 992px) */
+@media (max-width: 992px) {
+  .product-grid {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .product-card {
+    width: calc(50% - 20px);
+  }
+
+  .product-list-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sidebar {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+
+/* For mobile devices (max-width: 600px) */
+@media (max-width: 600px) {
+  .shop-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .search-bar {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .search-form {
+    flex: 1;
+    max-width: 100%;
+  }
+
+  .clear-button {
+    flex-shrink: 0;
+  }
+
+  .sort-bar {
+    width: 100%;
+    text-align: left;
+  }
+
+  .product-card {
+    width: 100%;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+}
+
 </style>
 
 
@@ -227,6 +307,9 @@
           <input type="text" name="search" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Search items..." class="search-input" />
           <button type="submit" class="search-button">Search</button>
         </form>
+        <a href="/shop">
+        <button type="button" class="clear-button">Clear All</button>
+      </a>
       </div>
       <div class="sort-bar">
         <form action="/shop" method="GET">
@@ -404,15 +487,15 @@ function addToCart(productId) {
 			title: "Added to Cart",
 			text: response.message,
 			icon: "success",
-			showCancelButton: true,  // Enables the second button
-			confirmButtonText: "Cart", // Redirects to cart
-			cancelButtonText: "OK",  // Closes the alert
+			showCancelButton: true,  
+			confirmButtonText: "Cart", 
+			cancelButtonText: "OK", 
 			timer: 2000
 		}).then((result) => {
 			if (result.isConfirmed) {
-				window.location.href = "/cart"; // Redirects to the cart page
+				window.location.href = "/cart"; 
 			} else {
-				location.reload(); // Reload to update cart UI
+				location.reload(); 
 			}
 		});
 

@@ -140,11 +140,10 @@ const getListCategory = async (req, res) => {
   try {
     let id = req.query.id;
     await Category.updateOne({_id: id}, {$set: {isListed: false }})
-    // res.json({ success: true, message: "Category unlisted successfully" })
     res.redirect("/admin/category");
   } catch (error) {
     console.error(error)
-    // res.status(500).json({ success: false, message: "Failed to unlist category" })
+    
     res.redirect("/pageerror");
   }
 }
@@ -154,12 +153,12 @@ const getUnlistCategory = async (req, res) => {
 
     let id = req.query.id
     await Category.updateOne({_id: id}, {$set: {isListed: true }})
-    // res.json({ success: true, message: "Category listed successfully" })
+    
     res.redirect("/admin/category");
 
   } catch (error) {
     console.error(error)
-    // res.status(500).json({ success: false, message: "Failed to list category" })
+    
     res.redirect("/pageerror");
   }
 }
@@ -169,14 +168,7 @@ const getEditCategory = async (req, res) => {
     
     const id = req.query.id
     const category = await Category.findOne({_id: id})
-//     if (!category) {
-//       return res.status(404).json({ success: false, message: "Category not found" })
-//     }
-//     res.json({ success: true, category })
-//   } catch (error) {
-//     console.error(error)
-//     res.status(500).json({ success: false, message: "Failed to fetch category" })
-//   }
+
        res.render("edit-category", {category: category})
 } catch (error) {
     res.redirect("/pageerror")

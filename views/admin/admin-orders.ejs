@@ -60,7 +60,7 @@
                                 <td>
                                     <div>
                                         <strong><%= order.address.name %></strong>
-                                        <!-- <div class="text-muted small"><%= order.address.email %></div> -->
+                                     
                                     </div>
                                 </td>
                                 <td>
@@ -92,11 +92,7 @@
                                             <%= order.status.toUpperCase() %>
                                         </span>
                                     </div>
-                                    <!-- <% if (order.paymentMethod) { %>
-                                        <small class="text-muted d-block mt-1">
-                                            Payment: <%= order.paymentMethod.toUpperCase() %>
-                                        </small>
-                                    <% } %> -->
+                                    
                                 </td>
                                 <td class="order-actions">
                                     <a href="/admin/orders/<%= order._id %>" 

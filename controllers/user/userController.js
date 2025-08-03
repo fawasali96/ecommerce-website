@@ -11,7 +11,6 @@ const generateReferralCode = require('../../helpers/generateReferralCode');
 
 
 
-
 const pageNotFound = async (req, res) => {
     try {
         res.render('page404')
@@ -423,10 +422,10 @@ const getFilteredProducts = async (req, res) => {
             case "priceHigh":
                 sortOption = { salePrice: -1 };
                 break;
-            case "aToZ":
+            case "az":
                 sortOption = { productName: 1 };
                 break;
-            case "zToA":
+            case "za":
                 sortOption = { productName: -1 };
                 break;
             case "ratings":

@@ -127,9 +127,19 @@ const applyCoupon = async (req, res) => {
             return res.json({ success: false, message: `Minimum purchase amount should be ₹${coupon.minimumPrice}` });
         }
 
-        if (coupon.userId && coupon.userId.includes(userId)) {
-            return res.json({ success: false, message: 'You have already used this coupon' });
-        }
+        if (coupon.isReferral) {
+    
+          if (coupon.isUsed) {
+             return res.json({ success: false, message: 'You have already used this referral coupon' });
+         }
+
+        } else {
+    
+          if (coupon.userId && coupon.userId.includes(userId)) {
+             return res.json({ success: false, message: 'You have already used this coupon' });
+         }
+      }
+
 
         res.json({ success: true, coupon: coupon });
     } catch (error) {

@@ -109,9 +109,9 @@
                   <div class="col-xl-5 col-lg-7 col-md-8">
                       <div class="hero__text">
                           <h6>Summer Collection</h6>
-                          <h2>Fall - Winter Collections 2030</h2>
+                          <h2>Fall - Winter Collections 2025</h2>
                           <p>A specialist label creating luxury essentials. Ethically created.</p>
-                          <a href="#" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                          <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
                       </div>
                   </div>
               </div>
@@ -123,9 +123,9 @@
                   <div class="col-xl-5 col-lg-7 col-md-8">
                       <div class="hero__text">
                           <h6>Summer Collection</h6>
-                          <h2>Fall - Winter Collections 2030</h2>
+                          <h2>Fall - Winter Collections 2025</h2>
                           <p>A specialist label creating luxury essentials.</p>
-                          <a href="#" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                          <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
                       </div>
                   </div>
               </div>
@@ -142,8 +142,8 @@
                       <img src="img/banner/banner-1.jpg" alt="Clothing Collections 2030">
                   </div>
                   <div class="banner__item__text">
-                      <h2>Clothing Collections 2030</h2>
-                      <a href="#">Shop now</a>
+                      <h2>Clothing Collections 2025</h2>
+                      <a href="/shop">Shop now</a>
                   </div>
               </div>
           </div>
@@ -154,7 +154,7 @@
                   </div>
                   <div class="banner__item__text">
                       <h2>Accessories</h2>
-                      <a href="#">Shop now</a>
+                      <a href="/shop">Shop now</a>
                   </div>
               </div>
           </div>
@@ -193,7 +193,7 @@
                                    alt="<%=products[i].productName%>">
                               </a>
                           </div>
-                          <a href="/addToWishlist?id=<%=products[i]._id%>" class="wishlist-btn">
+                          <a href="#" onclick="addToWishlist('<%=products[i]._id%>')" class="wishlist-btn">
                               <i class="fas fa-heart"></i>
                           </a>
                       </div>
@@ -201,8 +201,8 @@
 
                       <div class="product-content-wrap">
                           <h6><%=products[i].productName%></h6>
-                          <h5><%=products[i].salePrice%></h5>
-                          <a href="/addToCart?id=<%=products[i]._id%>">Add to cart</a>
+                          <h5><%=Math.round(products[i].salePrice)%></h5>
+                          <a href="#" onclick="addToCart('<%=products[i]._id%>')">Add to cart</a>
                       </div>
                   </div>
               </div>
@@ -211,4 +211,124 @@
       </div>
   </div>
 </section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+function handleAuthError(title, message) {
+    return Swal.fire({
+    title: title,
+    text: message,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Login",
+    cancelButtonText: "Cancel",
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = "/login";
+    }
+  });
+}
+
+function addToWishlist(productId) {
+    event.preventDefault();
+  $.ajax({
+    url: "/addToWishlist",
+    method: "POST",
+    data: {productId: productId},
+    success: (response) => {
+      if(response.status) {
+        Swal.fire({
+          title: "Added to the wishlist",
+          text: "The product has been added to your wishlist",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false
+        });
+      } else {
+        Swal.fire({
+          title: "Already in Wishlist",
+          text: response.message,
+          icon: "info",
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+    },
+    error: (xhr) => {
+      if (xhr.status === 401) {
+        handleAuthError(
+          "Not Logged In",
+          "You need to log in to add items to your wishlist."
+        );
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "There was an error adding the product to your wishlist.",
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+    }
+  })
+}
+
+function addToCart(productId) {
+  event.preventDefault();
+  $.ajax({
+    url: '/addToCart',
+    method: "POST",
+    data: { productId: productId },
+    success: (response) => {
+      if (response.status) {
+        Swal.fire({
+			title: "Added to Cart",
+			text: response.message,
+			icon: "success",
+			showCancelButton: true,  
+			confirmButtonText: "Cart", 
+			cancelButtonText: "OK", 
+			timer: 2000
+		}).then((result) => {
+			if (result.isConfirmed) {
+				window.location.href = "/cart"; 
+			} else {
+				location.reload(); 
+			}
+		});
+
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: response.message || "Unable to add to cart",
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+    },
+    error: (xhr) => {
+      if (xhr.status === 401) {
+        handleAuthError(
+          "Not Logged In",
+          "You need to log in to add items to your cart."
+        );
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "Stock limit reached or maximum 5 items per user",
+          icon: "error",
+          timer: 2000,
+          showConfirmButton: false
+        });
+      }
+    }
+  });
+}
+
+
+</script>
 <%- include("../../views/partials/user/footer") %>

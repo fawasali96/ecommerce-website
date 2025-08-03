@@ -293,7 +293,7 @@ body {
   </section>
 </main>
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
@@ -388,15 +388,15 @@ function addToCart(productId) {
 			title: "Added to Cart",
 			text: response.message,
 			icon: "success",
-			showCancelButton: true,  // Enables the second button
-			confirmButtonText: "Cart", // Redirects to cart
-			cancelButtonText: "OK",  // Closes the alert
+			showCancelButton: true,  
+			confirmButtonText: "Cart", 
+			cancelButtonText: "OK",  
 			timer: 2000
 		}).then((result) => {
 			if (result.isConfirmed) {
-				window.location.href = "/cart"; // Redirects to the cart page
+				window.location.href = "/cart"; 
 			} else {
-				location.reload(); // Reload to update cart UI
+				location.reload(); 
 			}
 		});
 

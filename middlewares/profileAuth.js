@@ -39,5 +39,4 @@ const checkBlockedUser = async (req, res, next) => {
 module.exports = {
     blockLoggedInUsers,
     checkBlockedUser,
-    
 }

@@ -1,15 +1,22 @@
 <%- include("../../views/partials/user/header") %>
+<style>
+   .product-name a {
+  color: #000; 
+  text-decoration: none;
+}
 
+.product-name a:hover {
+  color: #ff6b6b; 
+}
+
+
+</style>
  <!-- Start Banner Area -->
  <section class="banner-area organic-breadcrumb">
     <div class="container">
         <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
             <div class="col-first">
-                <h1>Wishlist</h1>
-                <nav class="d-flex align-items-center">
-                    <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="/wishlist">Wishlist</a>
-                </nav>
+                <h2>Wishlist</h2>
             </div>
         </div>
     </div>
@@ -44,7 +51,7 @@
 
                                     <%for(let product of wishlist){%>
                              
-                                       <tr>
+                                       <tr id="wishlist-item-<%= product._id %>">
                                            <td class="image product-thumbnail">
                                                <img src="/uploads/re-image/<%= product.productImage[0] %>"
                                                style="width: 50px; height: 50px; object-fit: cover;" />
@@ -64,14 +71,14 @@
                                                </p>
                                            </td>
                                            <td class="price" data-title="Price">₹<span>
-                                            <%=product.salePrice%>
+                                            <%=Math.round(product.salePrice)%>
                                           
                                            </span></td>
                                            <td class="text-center" data-title="Add to Cart">
-                                               <a href="#" onclick="addToCart('<%=product._id%>')" class="btn btn-sm">Add to Cart</a>
+                                               <a href="#" onclick="addToCart('<%=product._id%>')" class="btn btn-sm btn-success">Add to Cart</a>
                                            </td>
                                            <td class="action" data-title="Remove">
-                                               <a class="btn btn-sm" href="#" onclick="confirmRemove('<%=product._id%>')">
+                                               <a class="btn btn-sm btn-danger" href="#" onclick="confirmRemove('<%=product._id%>')">
                                                    <i class="fi-rs-trash">Remove</i>
                                                </a>
                                            </td>
@@ -111,10 +118,13 @@ function confirmRemove(productId) {
 }
 
 function addToCart(productId) {
+    event.preventDefault();
     $.ajax({
         url: "/addToCart",
         method: "POST",
-        data: {productId: productId},
+        data: {productId: productId,
+            fromWishlist: true
+        },
         success: (response) => {
             if(response.status) {
                 Swal.fire({
@@ -123,6 +133,19 @@ function addToCart(productId) {
                     icon: "success",
                     timer: 2000
                 });
+
+                $("#wishlist-item-" + productId).remove();
+
+                if ($("tbody tr").length === 0) {
+                    $("tbody").html(`
+                        <tr>
+                            <td colspan="5" class="text-center">
+                                <p class="lead mb-4">No items found in Wishlist</p>
+                            </td>
+                        </tr>
+                    `);
+                }
+
             } else {
                 Swal.fire({
                     title: "Error",

@@ -269,10 +269,6 @@ const editProduct = async (req, res) => {
             color: data.color
         }
 
-        // if(req.files.length > 0) {
-        //     updateFields.$push = {productImage: {$each: images}};
-        // }
-        // await Product.findByIdAndUpdate(id, updateFields, {new: true});
         const updateQuery = { $set: updateFields };
 
         if (images.length > 0) {

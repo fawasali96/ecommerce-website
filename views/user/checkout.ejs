@@ -5,20 +5,19 @@
     <div class="container">
         <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
             <div class="col-first">
-                <h1>Checkout</h1>
-                <nav class="d-flex align-items-center">
-                    <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="/cart">Cart<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="/checkout">Checkout</a>
-                </nav>
+                <h2>Checkout</h2>
             </div>
         </div>
     </div>
 </section>
 <!-- End Banner Area -->
 
-
     <style>
+
+        .static-link:hover {
+           color: #0b5ed7;
+        }
+
         .order-summary {
             background-color: white;
             padding: 20px;
@@ -218,7 +217,7 @@
                                 
                             </div>
                             <p id="couponMessage" class="mt-2" style="display: none;"></p>
-                            <a href="/mycoupons">View All Coupons</a>
+                            <a href="/mycoupons" class="static-link">View All Coupons</a>
                         </div>
                     
                         <div id="appliedCoupon" style="display: none;">
@@ -237,8 +236,8 @@
                             <span>Shipping</span>
                             <span>₹ 50.00</span>
                         </div>
-                        <div class="text-right text-primary mb-2">
-                            <a href="#" onclick="showShippingCharge(); return false;">View shipping charge</a>
+                        <div class="text-right mb-2">
+                            <a href="#" class="static-link" onclick="showShippingCharge(); return false;">View shipping charge</a>
                         </div>
                         <div class="d-flex justify-content-between font-weight-bold">
                             <span>Total</span>

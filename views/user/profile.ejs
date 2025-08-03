@@ -108,7 +108,7 @@
 
             <!-- Profile Picture -->
             <div class="profile-image-container">
-                <img src="/uploads/re-image/<%=user.profileImage%>"  alt="Profile Picture" class="rounded-circle">
+                <img src="<%= user.profileImage ? '/uploads/re-image/' + user.profileImage : '/images/default-profile.jpg' %>"  alt="Profile Picture" class="rounded-circle">
                 <div class="ml-3">
                     <h5><%= user.name%></h5>
                     <p class="text-muted"><%= user.email%></p>
@@ -123,11 +123,10 @@
                 <p><strong>Your Referral Code:</strong> <%= user.referralCode || 'N/A' %></p>
                 <button class="btn btn-sm btn-secondary" onclick="copyReferral()">Copy Referral Link</button>
            </div>
-            </div>
-
-            <a href="/edit-profile" class="btn btn-primary btn-edit">
+                 <a href="/edit-profile" class="btn btn-primary btn-edit">
                 <i class="bi bi-pencil-square"></i> Edit Profile
-            </a>
+                 </a>
+            </div>
         </div>
     </div>
 </div>
@@ -139,8 +138,23 @@
     const referralCode = "<%= user.referralCode %>";
     const referralLink = `http://localhost:3000/signup?ref=${referralCode}`;
     navigator.clipboard.writeText(referralLink)
-      .then(() => alert("Referral link copied to clipboard!"))
-      .catch(() => alert("Failed to copy referral link."));
+        .then(() => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Copied!',
+                text: 'Referral link copied to clipboard!',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        })
+        .catch(() => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Failed to copy referral link.',
+                confirmButtonColor: '#d33'
+            });
+        });
   }
 
 

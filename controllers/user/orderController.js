@@ -78,15 +78,27 @@ const placeOrder = async (req, res) => {
     let couponApplied = false
 
     if (couponCode) {
-      const coupon = await Coupon.findOne({ name: couponCode, isList: true })
-        if (coupon && !coupon.userId.includes(userId)) {
-        discount = coupon.offerPrice
-        couponApplied = true
-        await Coupon.findByIdAndUpdate(coupon._id, {
-          userId: userId
-        })
+       const coupon = await Coupon.findOne({ name: couponCode, isList: true });
+
+    if (coupon) {
+      if (coupon.isReferral) {
+      // For referral coupons, check isUsed
+      if (!coupon.isUsed) {
+        discount = coupon.offerPrice;
+        couponApplied = true;
+        await Coupon.findByIdAndUpdate(coupon._id, { $set: { isUsed: true } }); 
+      }
+    } else {
+      // For admin coupons, check if user has already used it
+      if (!coupon.userId.includes(userId)) {
+        discount = coupon.offerPrice;
+        couponApplied = true;
+        await Coupon.findByIdAndUpdate(coupon._id, { $push: { userId } }); // Push userId into array
       }
     }
+  }
+}
+
 
     const finalAmount = totalAmount - discount + DELIVERY_CHARGE
     const discountedItems = distributeDiscount(
@@ -161,11 +173,13 @@ const placeOrder = async (req, res) => {
 }
 
 const getOrders = async (req, res) => {
-  try {
-    const userId = req.session.user
-    
-    const search = req.query.search || "";
 
+  try {
+
+    const userId = req.session.user
+    const search = req.query.search || "";
+    const page = parseInt(req.query.page) || 1;
+    const limit = 5;
     
     let orders = await Order.find({ userId })
       .sort({ createdOn: -1 })
@@ -175,7 +189,6 @@ const getOrders = async (req, res) => {
     
     if (search) {
       const searchRegex = new RegExp(search, "i");
-
       orders = orders.filter(order =>
         order.orderedItems.some(item =>
           searchRegex.test(item.product?.productName)
@@ -183,7 +196,12 @@ const getOrders = async (req, res) => {
       );
     }
 
-    // const orders = await Order.find({ userId }).sort({ createdOn: -1 })
+    // Pagination after filtering
+    const totalOrders = orders.length;
+    const totalPages = Math.ceil(totalOrders / limit);
+    const paginatedOrders = orders.slice((page - 1) * limit, page * limit);
+
+    
     const categories = await Category.find({ isListed: true })
     const productData = await Product.find({
       isBlocked: false,
@@ -194,9 +212,12 @@ const getOrders = async (req, res) => {
     const user = await User.findById(userId)
 
     res.render("orders", {
-      orders: orders,
+      orders: paginatedOrders,
       user: user,
       product: productData,
+      currentPage: page,
+      totalPages,
+      search
     })
   } catch (error) {
     console.error("Error in getOrders:", error)
@@ -471,8 +492,6 @@ const generateInvoice = async (req, res) => {
         res.status(500).send("Error generating invoice")
       }
 
-      // Optionally delete the file after sending
-      // fs.unlinkSync(filePath);
     })
   } catch (error) {
     console.error("Error generating invoice:", error)

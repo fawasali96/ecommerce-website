@@ -179,11 +179,13 @@ const userProfile = async (req, res) => {
         const userId = req.session.user;
         const userData = await User.findById(userId);
         const addressData = await Address.findOne({userId: userId})
-        res.render("profile", {
-            user: userData,
-            userAddress: addressData,
-            referralCode: userData.referralCode
-        })
+        const profileImage = userData.profileImage? userData.profileImage: 'default-profile.jpg';
+
+    res.render("profile", {
+      user: { ...userData.toObject(), profileImage },
+      userAddress: addressData,
+      referralCode: userData.referralCode
+    });
         
     } catch (error) {
         console.error("Error for retrieve profile data", error);
@@ -195,9 +197,12 @@ const getEditProfile = async (req, res) => {
     try {
         const userId = req.session.user;
         const userData = await User.findById(userId);
-        res.render("edit-profile", {
-            user: userData,
-        });
+        const profileImage = userData.profileImage
+         ? userData.profileImage: 'default-profile.jpg';
+
+    res.render("edit-profile", {
+      user: { ...userData.toObject(), profileImage }
+    });
 
     } catch (error) {
         console.error("Error retrieving profile data:", error);
@@ -229,7 +234,6 @@ const editProfile = async (req, res) => {
       });
     }
 
-    // Prepare updated data
     const updatedData = { name, phone };
 
     // Handle profile image upload
@@ -242,11 +246,11 @@ const editProfile = async (req, res) => {
         }
       }
 
-      // Save new image filename
+      
       updatedData.profileImage = req.file.filename;
     }
 
-    // Update user
+    
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       updatedData,
@@ -283,10 +287,9 @@ const changeEmail = async (req, res) => {
 
 const changeEmailValid = async (req, res) => {
     try {
-        const userId = req.session.user; // Logged-in user's ID
+        const userId = req.session.user; 
         const { email } = req.body;
 
-        // Fetch logged-in user's current email
         const user = await User.findById(userId);
 
         if (!user || user.email !== email) {
@@ -593,8 +596,6 @@ const deleteAddress = async (req,res) => {
         
     }
 }
-
-
 
 
 module.exports = {
