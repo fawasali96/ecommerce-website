@@ -136,7 +136,7 @@
 
     function copyReferral() {
     const referralCode = "<%= user.referralCode %>";
-    const referralLink = `http://localhost:3000/signup?ref=${referralCode}`;
+    const referralLink = `https://men-fashion.shop/signup?ref=${referralCode}`;
     navigator.clipboard.writeText(referralLink)
         .then(() => {
             Swal.fire({
