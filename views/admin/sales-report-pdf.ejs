@@ -16,11 +16,11 @@
   <h1>Sales Report</h1>
   <div class="summary">
     <h2>Summary</h2>
-    <p><strong>Total Sales:</strong> ₹<%= salesData.totalSales.toLocaleString() %></p>
+    <p><strong>Total Sales:</strong> ₹<%= Math.round(salesData.totalSales).toLocaleString() %></p>
     <p><strong>Total Orders:</strong> <%= salesData.orderCount %></p>
-    <p><strong>Total Product Discounts:</strong> ₹<%= salesData.discounts.toLocaleString() %></p>
-    <p><strong>Total Coupon Discounts:</strong> ₹<%= salesData.coupons.toLocaleString() %></p>
-    <p><strong>Total Overall Discount:</strong> ₹<%= salesData.lessPrices.toLocaleString() %></p>
+    <p><strong>Total Product Discounts:</strong> ₹<%= Math.round(salesData.discounts).toLocaleString() %></p>
+    <p><strong>Total Coupon Discounts:</strong> ₹<%= Math.round(salesData.coupons).toLocaleString() %></p>
+    <p><strong>Total Overall Discount:</strong> ₹<%= Math.round(salesData.lessPrices).toLocaleString() %></p>
 
   </div>
 
@@ -40,9 +40,9 @@
         <tr>
           <td><%= new Date(sale.date).toLocaleDateString() %></td>
           <td><%= sale.orderId.slice(-12) %></td>
-          <td>₹<%= sale.amount.toLocaleString() %></td>
-          <td>₹<%= sale.discount.toLocaleString() %></td>
-          <td>₹<%= sale.coupon.toLocaleString() %></td>
+          <td>₹<%= Math.round(sale.amount).toLocaleString() %></td>
+          <td>₹<%= Math.round(sale.discount).toLocaleString() %></td>
+          <td>₹<%= Math.round(sale.coupon).toLocaleString() %></td>
         </tr>
       <% }) %>
     </tbody>

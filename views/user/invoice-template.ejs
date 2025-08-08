@@ -166,7 +166,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>Image</th>
+                    
                     <th>Product</th>
                     <th>Quantity</th>
                     <th>Price</th>
@@ -176,13 +176,10 @@
             <tbody>
                 <% order.orderedItems.forEach(item => { %>
                     <tr>
-                        <td>
-                            <% console.log('Image path:', item.productImages[0]); %>
-                            <img src="/uploads/re-image/<%= item.productImages[0] %>" alt="<%= item.productName %>" class="product-image">
-                        </td>
+                        
                         <td><%= item.productName %></td>
                         <td><%= item.quantity %></td>
-                        <td>₹<%= item.price.toFixed(2) %></td>
+                        <td>₹<%= Math.round(item.price).toFixed(2) %></td>
                         <td>₹<%= (item.price * item.quantity).toFixed(2) %></td>
                     </tr>
                 <% }); %>
@@ -192,12 +189,12 @@
         <div class="total-section">
             <div class="total-row">
                 <div class="total-label">Subtotal:</div>
-                <div class="total-value">₹<%= order.totalPrice.toFixed(2) %></div>
+                <div class="total-value">₹<%= Math.round(order.totalPrice).toFixed(2) %></div>
             </div>
             <% if (order.discount > 0) { %>
                 <div class="total-row">
                     <div class="total-label">Discount:</div>
-                    <div class="total-value">-₹<%= order.discount.toFixed(2) %></div>
+                    <div class="total-value">-₹<%= Math.round(order.discount).toFixed(2) %></div>
                 </div>
             <% } %>
             <div class="total-row">
@@ -206,7 +203,7 @@
             </div>
             <div class="total-row grand-total">
                 <div class="total-label">Grand Total:</div>
-                <div class="total-value">₹<%= order.finalAmount.toFixed(2) %></div>
+                <div class="total-value">₹<%= Math.round(order.finalAmount).toFixed(2) %></div>
             </div>
         </div>
 
