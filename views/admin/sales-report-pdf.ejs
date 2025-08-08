@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Sales Report</title>
   <style>
-    body { font-family: Arial, 'DejaVu Sans' sans-serif; padding: 40px; }
+    body { font-family: Arial, sans-serif; padding: 40px; }
     h1, h2 { text-align: center; }
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
     th, td { border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; }
@@ -16,11 +16,11 @@
   <h1>Sales Report</h1>
   <div class="summary">
     <h2>Summary</h2>
-    <p><strong>Total Sales:</strong> ₹<%= Math.round(salesData.totalSales).toLocaleString() %></p>
+    <p><strong>Total Sales:</strong> &#8377;<%= Math.round(salesData.totalSales).toLocaleString() %></p>
     <p><strong>Total Orders:</strong> <%= salesData.orderCount %></p>
-    <p><strong>Total Product Discounts:</strong> ₹<%= Math.round(salesData.discounts).toLocaleString() %></p>
-    <p><strong>Total Coupon Discounts:</strong> ₹<%= Math.round(salesData.coupons).toLocaleString() %></p>
-    <p><strong>Total Overall Discount:</strong> ₹<%= Math.round(salesData.lessPrices).toLocaleString() %></p>
+    <p><strong>Total Product Discounts:</strong> &#8377;<%= Math.round(salesData.discounts).toLocaleString() %></p>
+    <p><strong>Total Coupon Discounts:</strong> &#8377;<%= Math.round(salesData.coupons).toLocaleString() %></p>
+    <p><strong>Total Overall Discount:</strong> &#8377;<%= Math.round(salesData.lessPrices).toLocaleString() %></p>
 
   </div>
 

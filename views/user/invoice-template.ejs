@@ -5,7 +5,7 @@
     <title>Invoice #<%= order.orderId %></title>
     <style>
         body {
-            font-family: Arial, 'DejaVu Sans', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             color: #333;
@@ -189,21 +189,21 @@
         <div class="total-section">
             <div class="total-row">
                 <div class="total-label">Subtotal:</div>
-                <div class="total-value">₹<%= Math.round(order.totalPrice).toFixed(2) %></div>
+                <div class="total-value">&#8377;<%= Math.round(order.totalPrice).toFixed(2) %></div>
             </div>
             <% if (order.discount > 0) { %>
                 <div class="total-row">
                     <div class="total-label">Discount:</div>
-                    <div class="total-value">-₹<%= Math.round(order.discount).toFixed(2) %></div>
+                    <div class="total-value">-&#8377;<%= Math.round(order.discount).toFixed(2) %></div>
                 </div>
             <% } %>
             <div class="total-row">
                 <div class="total-label">Delivery Charge:</div>
-                <div class="total-value">₹<%= order.deliveryCharge.toFixed(2) %></div>
+                <div class="total-value">&#8377;<%= order.deliveryCharge.toFixed(2) %></div>
             </div>
             <div class="total-row grand-total">
                 <div class="total-label">Grand Total:</div>
-                <div class="total-value">₹<%= Math.round(order.finalAmount).toFixed(2) %></div>
+                <div class="total-value">&#8377;<%= Math.round(order.finalAmount).toFixed(2) %></div>
             </div>
         </div>
 
