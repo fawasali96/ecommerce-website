@@ -195,13 +195,23 @@ const changeQuantity = async (req, res) => {
       path: 'cart.productId',
       model: 'Product'
     });
-    const grandTotal = updatedUser.cart.reduce((total, item) => total + (item.productId.salePrice * item.quantity), 0);
+    // const grandTotal = updatedUser.cart.reduce((total, item) => total + (item.productId.salePrice * item.quantity), 0);
+    // Calculate totals
+    const cartSubtotal = updatedUser.cart.reduce((total, item) => total + (item.productId.salePrice * item.quantity), 0);
+    const shippingCharge = 50; // or however you calculate shipping
+    const cartTotal = cartSubtotal + shippingCharge;
+
+    // Calculate product total for changed item
+    const productTotal = product.salePrice * newQuantity;
 
     return res.json({ 
       status: true, 
       message: "Cart updated", 
       quantity: newQuantity, 
-      grandTotal: grandTotal 
+      // grandTotal: grandTotal 
+      productTotal: productTotal,
+      cartSubtotal: cartSubtotal,
+      cartTotal: cartTotal
     });
   } catch (error) {
     console.error('Error in changeQuantity:', error);

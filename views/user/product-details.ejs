@@ -239,7 +239,6 @@ body {
             <h2><%= product.productName %></h2>
             <div class="product-detail-rating">
               <span>Brand: <a class="text-success" href="#"><%= product.brand %></a></span>
-              <span>⭐⭐⭐⭐☆ (25 reviews)</span>
             </div>
 
             <div class="product-price-cover">
@@ -275,8 +274,6 @@ body {
             </div> 
 
             <ul style="list-style: none" class="product-meta">
-              <li>Stock Code: <span class="text-success">FWM15VKT</span></li>
-              <li>Tags: <span class="text-success"><%= category.name %></span></li>
               <li>Availability: 
                   <% if (quantity > 0) { %>
                    <span class="text-success"><%= quantity %> Items in Stock</span>

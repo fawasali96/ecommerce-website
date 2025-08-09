@@ -66,12 +66,12 @@
             border-radius: 5px;
 }
     .product-name a {
-            color: #000; /* normal state */
+            color: #000; 
             text-decoration: none;
 }
 
     .product-name a:hover {
-            color: #ff6b6b; /* or any color visible on your background */
+            color: #ff6b6b; 
 }
 
 
@@ -289,7 +289,7 @@
 <main class="main">
     <br><br>
     <section class="mt-50 mb-50">
-        <div class="container">
+        <div class="container" id="cartSection">
             <div class="row">
                 <div class="col-9">
                     <div class="table-responsive">
@@ -360,7 +360,7 @@
                         <hr>
                         <div class="flex">
                             <span>Subtotal</span>
-                            <span class="font-semibold">₹ <%= Math.round(grandTotal) %></span>
+                            <span id="cartSubtotal" class="font-semibold">₹ <%= Math.round(grandTotal) %></span>
                         </div>
                         <div class="flex">
                             <span>Shipping</span>
@@ -372,7 +372,7 @@
                         </div>
                         <div class="flex mb-4">
                             <span>Total</span>
-                            <span class="font-semibold text-blue">₹ <%= Math.round(grandTotal)+50 %></span>
+                            <span id="cartGrandTotal" class="font-semibold text-blue">₹ <%= Math.round(grandTotal)+50 %></span>
                         </div>
                         <% if (cartItems && cartItems.length > 0) { %>
                            <a href="/checkout" class="w-full bg-yellow text-white py-2 px-2 rounded mb-4">
@@ -418,14 +418,21 @@
                 return;
             }
         }
-
         $.ajax({
             url: '/changeQuantity',
             method: 'POST',
             data: { productId: productId, action: action },
             success: (response) => {
                 if (response.status) {
-                    location.reload(); // Reload the page to update all totals
+                    // location.reload(); // Reload the page to update all totals
+                    // $('#cartSection').load(window.location.href + ' #cartSection > *');
+                    quantityElement.value = response.quantity;
+                    document.getElementById(`subTotal${productId}`).innerText = `${Math.round(response.productTotal).toLocaleString()}`;
+document.getElementById('cartSubtotal').innerText = `₹${Math.round(response.cartSubtotal).toLocaleString()}`;
+document.getElementById('cartGrandTotal').innerText = `₹${Math.round(response.cartTotal).toLocaleString()}`;
+
+
+
                 } else {
                     Swal.fire('Error', response.message, 'error');
                 }
