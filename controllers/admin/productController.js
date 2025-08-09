@@ -13,9 +13,10 @@ const calculateEffectivePrice = async (product) => {
   const productOffer = product.productOffer || 0;
 
   const effectiveOffer = Math.max(categoryOffer, productOffer);
+  
 
   if (effectiveOffer > 0) {
-    const discountedPrice = product.regularPrice * (1 - effectiveOffer / 100);
+    const discountedPrice = product.salePrice * (1 - effectiveOffer / 100);
     return Math.round(discountedPrice * 100) / 100;
   }
 
@@ -154,7 +155,6 @@ const addProductOffer = async (req, res) => {
     }
 
     product.productOffer = parseInt(percentage);
-    product.salePrice = await calculateEffectivePrice(product);
     await product.save();
 
     res.json({ status: true, message: "Offer added successfully" });
@@ -283,11 +283,8 @@ const editProduct = async (req, res) => {
         
         console.error(error);
         res.redirect("/pageerror");
-
-        
     }
-    
-
+  
 }
 
 

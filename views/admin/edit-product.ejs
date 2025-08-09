@@ -205,6 +205,7 @@
        </div>
    </section>
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
 
@@ -230,7 +231,7 @@ function validateForm() {
            const category = document.getElementsByName('category')[0].value;
            const images = document.getElementById('input1')
            const quantity=document.getElementsByName('quantity')[0].value;
-const imageDatas = document.getElementById("imageDatas")?.value?.trim();
+           const imageDatas = document.getElementById("imageDatas")?.value?.trim();
 
            let isValid = true;    
            if (name.trim() === "") {
@@ -279,7 +280,8 @@ const imageDatas = document.getElementById("imageDatas")?.value?.trim();
            displayErrorMessage("images-error", 'Please select an image.');
            isValid = false;
 }
-console.log("Validation result:", isValid);
+
+            console.log("Validation result:", isValid);
            return isValid;
        }
       
