@@ -8,7 +8,8 @@ const cartController = require("../controllers/user/cartController");
 const checkoutController = require("../controllers/user/checkoutController");
 const orderController = require("../controllers/user/orderController");
 const wishlistController = require("../controllers/user/wishlistController");
-const couponController = require("../controllers/user/couponController")
+const walletController = require("../controllers/user/walletController");
+const couponController = require("../controllers/user/couponController");
 
 const multer = require("multer");
 const storage = require("../helpers/multer");
@@ -111,5 +112,7 @@ router.post("/orders/return", userAuth, orderController.requestReturn);
 
 router.get("/mycoupons",userAuth,couponController.loadCoupons);
 router.post("/apply-coupon", userAuth, checkoutController.applyCoupon);
+
+router.get('/wallet',userAuth, walletController.loadWallet);
 
 module.exports = router;

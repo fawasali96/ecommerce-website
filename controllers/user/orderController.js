@@ -112,10 +112,10 @@ const placeOrder = async (req, res) => {
       discount,
     )
 
-    if (paymentMethod === "cod" && totalAmount > 35000) {
+    if (paymentMethod === "cod" && totalAmount > 1000) {
       return res.status(400).json({
         success: false,
-        message: "COD not available for orders above ₹35,000",
+        message: "COD not available for orders above ₹1,000",
       })
     }
 
@@ -253,7 +253,7 @@ const cancelOrder = async (req, res) => {
   try {
     const { orderId, reason } = req.body
     const userId = req.session.user
-console.log(req.session)
+    
     const order = await Order.findOne({ _id: orderId, userId })
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found" })
@@ -272,6 +272,16 @@ console.log(req.session)
         $inc: { quantity: order.orderedItems[0].quantity },
       })
 
+      if (order.paymentMethod === "online") {
+        const refundSuccess = await processRefund(userId, order)
+        if (!refundSuccess) {
+          return res.status(500).json({
+            success: false,
+            message: "Failed to process refund",
+          })
+        }
+      }
+
       await order.save()
       res.json({ success: true, message: "Order cancelled successfully" })
     } else {
@@ -282,6 +292,27 @@ console.log(req.session)
     res.status(500).json({ success: false, message: "Internal server error" })
   }
 }
+
+
+const processRefund = async (userId, order) => {
+  try {
+    
+    const refundAmount = order.finalAmount - order.deliveryCharge;
+
+    
+    await User.findByIdAndUpdate(
+      userId,
+      { $inc: { wallet: refundAmount } }, // Increment wallet by refund amount
+      { new: true }
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Error processing refund:", error);
+    return false;
+  }
+};
+
 
 const createRazorpayOrder = async (req, res) => {
   try {
@@ -509,6 +540,7 @@ placeOrder,
 getOrders,
 loadOrderDetails,
 cancelOrder,
+processRefund,
 createRazorpayOrder,
 verifyPayment,
 requestReturn,

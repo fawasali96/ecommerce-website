@@ -56,7 +56,8 @@ const loadSalesPage = async (req, res) => {
       
       let totalRegularPrice = 0;
       let totalFinalAmount = 0;
-  
+      let totalFinalAmountWithoutDelivery = 0;
+
       const sales = orders.map(order => {
     
           const orderRegularPrice = order.orderedItems.reduce((sum, item) => {
@@ -64,19 +65,22 @@ const loadSalesPage = async (req, res) => {
           }, 0);
 
           const finalAmountWithoutDelivery = order.finalAmount - 50;
+          const finalAmount = order.finalAmount; 
           
           totalRegularPrice += orderRegularPrice;
-          totalFinalAmount += finalAmountWithoutDelivery;
+          totalFinalAmountWithoutDelivery += finalAmountWithoutDelivery;
+          totalFinalAmount += finalAmount;
           
           
-          const actualDiscount = orderRegularPrice - finalAmountWithoutDelivery;
+          const actualDiscount = orderRegularPrice - finalAmount;
           const couponDiscount = order.couponApplied ? 
               (order.totalPrice - order.finalAmount) : 0;
             
           
           return {
+              customerName: order.address.name,
               orderId: order.orderId,
-              amount: finalAmountWithoutDelivery,
+              amount: finalAmount,
               discount: order.discount || 0,
               coupon: couponDiscount,
               lessPrice: actualDiscount,
@@ -92,7 +96,7 @@ const loadSalesPage = async (req, res) => {
       
       const salesData = {
           sales,
-          totalSales: totalFinalAmount,
+          totalSales: totalFinalAmountWithoutDelivery,
           orderCount: sales.length,
           discounts: sales.reduce((sum, sale) => sum + sale.discount, 0),
           coupons: sales.reduce((sum, sale) => sum + sale.coupon, 0),

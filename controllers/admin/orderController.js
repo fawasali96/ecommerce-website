@@ -1,12 +1,13 @@
 const Order = require("../../models/orderSchema");
 const User = require("../../models/userSchema");
 const Product = require("../../models/productSchema");
+const processRefund = require("../user/orderController").processRefund
 
 const getOrders = async (req, res) => {
   try {
     
     const page = parseInt(req.query.page) || 1;
-    const limit = 3;
+    const limit = 4;
     const skip = (page - 1) * limit;
 
     const orders = await Order.find().sort({ createdOn: -1 }).skip(skip).limit(limit);
@@ -98,8 +99,6 @@ const cancelOrder = async (req, res) => {
         $inc: { quantity: order.orderedItems[0].quantity },
       })
 
-
-
       await order.save()
       res.json({ success: true, message: "Order cancelled" })
     } else {
@@ -171,6 +170,16 @@ const updateReturnStatus = async (req, res) => {
     order.status = status
     
     order.updatedOn = new Date()
+
+    if (status === "Returned") {
+      const refundSuccess = await processRefund(order.userId, order)
+      if (!refundSuccess) {
+        return res.status(500).json({
+          success: false,
+          message: "Failed to process refund",
+        })
+      }
+    }
 
     await order.save()
     res.json({

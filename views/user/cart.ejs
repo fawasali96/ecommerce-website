@@ -445,6 +445,7 @@ document.getElementById('cartGrandTotal').innerText = `₹${Math.round(response.
     }
 
     function confirmRemove(productId) {
+        event.preventDefault();
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",

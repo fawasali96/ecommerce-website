@@ -154,9 +154,9 @@
                                             <span><%= order.orderedItems[0].productName %></span>
                                         </div>
                                     </td>
-                                    <td>₹<%= order.totalPrice / order.orderedItems[0].quantity %></td>
+                                    <td>₹<%= Math.round(order.totalPrice) / order.orderedItems[0].quantity %></td>
                                     <td><%= order.orderedItems[0].quantity %></td>
-                                    <td>₹<%= order.totalPrice %></td>
+                                    <td>₹<%= Math.round(order.totalPrice) %></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -230,7 +230,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Subtotal:</span>
-                                <span>₹<%= order.totalPrice %></span>
+                                <span>₹<%= Math.round(order.totalPrice) %></span>
                             </div>
                             <% if (order.discount > 0) { %>
                                 <div class="d-flex justify-content-between mb-2 text-success">
