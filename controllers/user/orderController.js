@@ -297,7 +297,13 @@ const cancelOrder = async (req, res) => {
 const processRefund = async (userId, order) => {
   try {
     
-    const refundAmount = order.finalAmount - order.deliveryCharge;
+    
+    let refundAmount;
+    if (order.status === "Cancelled") {
+      refundAmount = order.finalAmount; // full amount for cancelled
+    } else {
+      refundAmount = order.finalAmount - (order.deliveryCharge || 0); // subtract delivery charge for returned
+    }
 
     
     await User.findByIdAndUpdate(
