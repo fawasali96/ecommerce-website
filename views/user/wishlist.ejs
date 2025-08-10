@@ -104,6 +104,7 @@
 <script>
 
 function confirmRemove(productId) {
+    event.preventDefault();
     Swal.fire({
         title: "Are you sure",
         text: " You wont be able to revert this",
@@ -113,7 +114,9 @@ function confirmRemove(productId) {
         cancelButtonColor:"#d33",
         confirmButtonText:"Yes, remove it",
     }).then((result) => {
-        window.location.href = `/removeFromWishlist?productId=${productId}`
+        if (result.isConfirmed) {
+            window.location.href = `/removeFromWishlist?productId=${productId}`;
+        }
     }) 
 }
 

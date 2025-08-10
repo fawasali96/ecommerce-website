@@ -331,6 +331,7 @@ function handleAuthError(title, message) {
 }
 
 function addToWishlist(productId) {
+  event.preventDefault();
   $.ajax({
     url: "/addToWishlist",
     method: "POST",

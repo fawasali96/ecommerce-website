@@ -67,12 +67,8 @@ const addCategoryOffer = async (req, res) => {
     }
     await Category.updateOne({ _id: categoryId }, { $set: { categoryOffer: percentage } });
 
-    // Update all products in this category
-    const products = await Product.find({ category: categoryId });
-    for (const product of products) {
-      product.salePrice = await calculateEffectivePrice(product);
-      await product.save();
-    }
+    category.categoryOffer = percentage;
+    await category.save();
 
     res.json({ status: true, message: "Offer added successfully" });
   } catch (error) {
@@ -120,13 +116,8 @@ const editCategoryOffer = async (req, res) => {
       return res.status(404).json({ status: false, message: "Category not found" });
     }
 
-    await Category.updateOne({ _id: categoryId }, { $set: { categoryOffer: percentage } });
-
-    const products = await Product.find({ category: categoryId });
-    for (const product of products) {
-      product.salePrice = await calculateEffectivePrice(product);
-      await product.save();
-    }
+    category.categoryOffer = percentage;
+    await category.save();
 
     res.json({ status: true, message: "Offer updated successfully" });
   } catch (error) {
