@@ -46,6 +46,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 
+app.use((req, res) => {
+    res.status(404).render('page-404'); 
+});
+
 
 
 app.listen(process.env.PORT, () => {

@@ -4,6 +4,7 @@ const Product = require("../../models/productSchema");
 
 
 const puppeteer = require('puppeteer');
+const ExcelJS = require('exceljs');
 const ejs = require('ejs');
 const path = require('path');
 
@@ -107,7 +108,9 @@ const loadSalesPage = async (req, res) => {
   
       if (format === 'pdf') {
           return generatePDF(res, salesData);
-      } 
+      } else if (format === 'excel') {
+          return generateExcel(res, salesData);
+      }
   
       res.render('sales-report', { salesData, selectedType: reportType });
 
@@ -159,6 +162,48 @@ const generatePDF = async (res, salesData) => {
     console.error('Error generating PDF:', error);
     res.status(500).send('Failed to generate PDF');
   }
+};
+
+
+
+const generateExcel = async (res, salesData) => {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Sales Report');
+
+  // Summary section
+  worksheet.addRow(['Summary']);
+  worksheet.addRow(['Total Sales', '', `₹${Math.round(salesData.totalSales).toLocaleString()}`]);
+  worksheet.addRow(['Total Orders', '', salesData.orderCount]);
+  worksheet.addRow(['Total Coupon Discounts', '', `₹${Math.round(salesData.discounts).toLocaleString()}`]);
+  worksheet.addRow(['Total Product Discounts', '', `₹${Math.round(salesData.lessPrices).toLocaleString()}`]);
+  worksheet.addRow([]);
+
+  // Detailed sales heading
+  worksheet.addRow(['Detailed Sales']);
+  
+  // Column headers for Detailed Sales
+  worksheet.addRow(['Date', 'Customer', 'Order ID', 'Amount', 'Product Discount', 'Coupon Discount']);
+
+  // Detailed sales data
+  salesData.sales.forEach(sale => {
+    worksheet.addRow([
+      new Date(sale.date).toLocaleDateString(),
+      sale.customerName,
+      sale.orderId.slice(-12),
+      `₹${Math.round(sale.amount).toLocaleString()}`,
+      `₹${Math.round(sale.discount).toLocaleString()}`,
+      `₹${Math.round(sale.coupon).toLocaleString()}`
+    ]);
+  });
+
+  // Style column headers (bold)
+  const headerRow = worksheet.getRow(worksheet.lastRow.number - salesData.sales.length);
+  headerRow.font = { bold: true };
+
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition', 'attachment; filename=sales-report.xlsx');
+  
+  await workbook.xlsx.write(res);
 };
 
 

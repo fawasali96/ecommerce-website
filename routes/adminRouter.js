@@ -82,8 +82,7 @@ router.get("/dashboard",adminAuth,async (req,res)=>{
 
 
 router.use((req, res) => {
-    res.status(404).redirect("/admin/pageerror");
+    res.status(404).render('admin-error'); 
 });
-
 
 module.exports = router;

@@ -115,4 +115,6 @@ router.post("/apply-coupon", userAuth, checkoutController.applyCoupon);
 
 router.get('/wallet',userAuth, walletController.loadWallet);
 
+
+
 module.exports = router;
